@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chemistry Test Prep</title>
+<style>
+:root{
+  --bg:#f5f6f8; --card:#ffffff; --ink:#1c2430; --muted:#5d6878; --line:#dfe3ea;
+  --accent:#2457c5; --accent-ink:#ffffff; --soft:#eaf0fc;
+  --good:#1e7d46; --good-bg:#e4f5ea; --bad:#b3261e; --bad-bg:#fbe9e7; --step:#fff8e1; --step-line:#e6c65a;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#12161c; --card:#1b212a; --ink:#e8ecf2; --muted:#9aa6b6; --line:#2e3744;
+    --accent:#7aa2ff; --accent-ink:#0d1420; --soft:#222c3d;
+    --good:#6fd698; --good-bg:#17301f; --bad:#ff8a80; --bad-bg:#3a1c1a; --step:#2b2715; --step-line:#8a7528;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+.wrap{max-width:860px;margin:0 auto;padding:16px 16px 80px}
+h1{font-size:26px;margin:14px 0 2px}
+.sub{color:var(--muted);margin:0 0 14px}
+nav{display:flex;gap:8px;flex-wrap:wrap;position:sticky;top:0;background:var(--bg);padding:10px 0;z-index:5}
+nav button{flex:1 1 130px;padding:12px 10px;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;font:inherit;font-weight:600;cursor:pointer}
+nav button.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin:14px 0}
+.card h2{margin:0 0 6px;font-size:21px}
+.card h3{margin:16px 0 6px;font-size:17px}
+.topic>summary{cursor:pointer;font-weight:700;font-size:19px;list-style:none;display:flex;gap:10px;align-items:center}
+.topic>summary::-webkit-details-marker{display:none}
+.num{display:inline-flex;align-items:center;justify-content:center;min-width:32px;height:32px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-size:15px;font-weight:700}
+.rule{background:var(--soft);border-radius:10px;padding:10px 14px;margin:10px 0}
+.rule b{color:var(--accent)}
+.topic h4{margin:18px 0 4px;font-size:17px;color:var(--accent)}
+.plain{border-left:4px solid var(--accent);background:var(--soft);border-radius:8px;padding:10px 14px;margin:10px 0}
+.warn{border-left:4px solid var(--bad);background:var(--bad-bg);border-radius:8px;padding:10px 14px;margin:10px 0}
+.graphs{display:flex;flex-wrap:wrap;gap:12px;margin:12px 0}
+figure.g{margin:0;flex:1 1 170px;max-width:260px;background:var(--soft);border-radius:10px;padding:8px 8px 10px;text-align:center}
+figure.g.wide{flex-basis:100%;max-width:470px}
+figure.g svg{width:100%;height:auto;display:block}
+figure.g figcaption{font-size:14.5px;line-height:1.4;margin-top:4px}
+.words{margin:6px 0;padding-left:22px} .words li{margin:6px 0}
+.math{font-family:"Cambria Math",Georgia,"Times New Roman",serif;font-size:1.08em;white-space:nowrap}
+sup{font-size:.72em}
+.steps{margin:10px 0 0;padding:0;list-style:none;counter-reset:s}
+.steps li{counter-increment:s;background:var(--step);border-left:4px solid var(--step-line);border-radius:8px;padding:9px 12px 9px 44px;margin:8px 0;position:relative}
+.steps li::before{content:counter(s);position:absolute;left:10px;top:9px;width:24px;height:24px;border-radius:50%;background:var(--step-line);color:#1c1c1c;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center}
+.btn{display:inline-block;padding:10px 16px;border-radius:10px;border:2px solid var(--accent);background:var(--accent);color:var(--accent-ink);font:inherit;font-weight:600;cursor:pointer;margin:8px 8px 0 0}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn.ghost.on{background:var(--accent);color:var(--accent-ink)}
+.btn:disabled{opacity:.45;cursor:default}
+.q{font-size:18px;margin:6px 0 10px}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;margin:8px 0}
+.opt{padding:11px 12px;border:2px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font:inherit;text-align:left;cursor:pointer}
+.opt.sel{border-color:var(--accent);background:var(--soft)}
+.opt.right{border-color:var(--good);background:var(--good-bg)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-bg)}
+.part{margin:10px 0}
+.part label{display:block;color:var(--muted);font-size:15px;margin-bottom:4px}
+input[type=text]{font:inherit;padding:9px 10px;border:2px solid var(--line);border-radius:10px;width:150px;background:var(--card);color:var(--ink)}
+input.right{border-color:var(--good);background:var(--good-bg)} input.wrong{border-color:var(--bad);background:var(--bad-bg)}
+.msg{font-weight:700;margin:10px 0 0;padding:9px 12px;border-radius:10px}
+.msg.good{color:var(--good);background:var(--good-bg)} .msg.bad{color:var(--bad);background:var(--bad-bg)}
+.bar{height:10px;background:var(--line);border-radius:6px;overflow:hidden;margin:8px 0}
+.bar i{display:block;height:100%;background:var(--good);width:0}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.pill{font-size:14px;color:var(--muted);border:1px solid var(--line);border-radius:20px;padding:3px 10px}
+table{border-collapse:collapse;margin:8px 0}
+td,th{border:1px solid var(--line);padding:6px 14px;text-align:center}
+th{background:var(--soft)}
+.dots{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.dot{width:34px;height:34px;border-radius:8px;border:2px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:14px;cursor:pointer}
+.dot.cur{border-color:var(--accent)} .dot.ok{background:var(--good-bg);border-color:var(--good)} .dot.no{background:var(--bad-bg);border-color:var(--bad)}
+.hide{display:none}
+dl{margin:0} dt{font-weight:700;margin-top:10px} dd{margin:0;color:var(--muted)}
+small.tip{color:var(--muted);display:block;margin-top:6px}
+.mark{margin-left:auto;color:var(--good);font-size:24px;font-weight:800;min-width:24px;text-align:right}
+.topic.done{border-color:var(--good)}
+.tickbox{display:flex;align-items:center;gap:10px;margin-top:18px;padding:12px 14px;border:2px dashed var(--line);border-radius:10px;font-weight:700;cursor:pointer}
+.tickbox input{width:24px;height:24px;accent-color:var(--good)}
+.result{text-align:center}
+.result .big{font-size:72px;font-weight:800;line-height:1.1}
+.result.perfect .big,.result.ready .big{color:var(--good)} .result.zero .big{color:var(--bad)}
+.tlist{list-style:none;padding:0;margin:10px auto;max-width:560px;text-align:left} .tlist li{margin:8px 0} .tlist .opt{width:100%;display:flex;justify-content:space-between;gap:10px;align-items:center}
+.wrongq{border-top:1px solid var(--line);padding-top:14px;margin-top:14px}
+.tools{display:flex;gap:8px;flex-wrap:wrap} .tools .btn{margin:0;padding:8px 12px}
+.tool{font:inherit;font-size:15px;font-weight:600;padding:7px 11px;border-radius:9px;border:2px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+.tool.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+#wb{position:fixed;left:0;right:0;bottom:0;height:44vh;background:var(--card);border-top:3px solid var(--accent);z-index:20;display:flex;flex-direction:column;box-shadow:0 -6px 24px rgba(0,0,0,.25)}
+#wb.tall{height:78vh}
+#wb.hide,#calc.hide{display:none}
+#dock{position:fixed;left:8px;top:50%;transform:translateY(-50%);z-index:40;display:flex;flex-direction:column;gap:8px}
+#dock button{width:52px;height:52px;border-radius:50%;border:2px solid var(--accent);background:var(--card);color:var(--ink);font-size:22px;line-height:1;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.25);padding:0}
+#dock button.on{background:var(--accent);color:var(--accent-ink)}
+#dock button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+@media print{#dock{display:none}}
+@media (max-width:1010px){#dock{top:auto;transform:none;left:auto;right:10px;bottom:12px}
+ body.wbopen #dock{bottom:calc(44vh + 12px)} body.wbopen.wbtall #dock{bottom:calc(78vh + 12px)}}
+.wbbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 12px;border-bottom:1px solid var(--line)}
+.swatches{display:inline-flex;gap:6px} .swatch{width:28px;height:28px;border-radius:50%;border:3px solid var(--line);cursor:pointer;padding:0} .swatch.on{border-color:var(--accent)}
+#wbcanvas{flex:1;width:100%;touch-action:none;cursor:crosshair;display:block;background:var(--card)}
+body.wbopen .wrap{padding-bottom:48vh} body.wbopen.wbtall .wrap{padding-bottom:82vh}
+#calc{position:fixed;right:14px;top:74px;width:292px;max-width:calc(100vw - 28px);background:var(--card);border:2px solid var(--accent);border-radius:14px;padding:12px;z-index:30;box-shadow:0 8px 28px rgba(0,0,0,.3)}
+.calchead{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+#calcin{width:100%;font:600 20px/1.2 "Cambria Math",Georgia,serif;text-align:right;padding:9px 10px}
+#calcout{font:700 26px/1.3 "Cambria Math",Georgia,serif;text-align:right;min-height:36px;padding:4px 4px 8px;color:var(--accent);overflow-wrap:anywhere}
+#calckeys{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+#calckeys button{font:inherit;font-weight:700;padding:11px 0;border-radius:9px;border:2px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+#calckeys button.op{background:var(--soft)} #calckeys button.eq{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.dg{width:100%;height:auto;display:block}
+.dg text{fill:var(--ink);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+.dg text.big{font-size:17px;font-weight:800} .dg text.sm{font-size:12px;fill:var(--muted)}
+.dg text.acc{fill:var(--accent)} .dg text.good{fill:var(--good)} .dg text.bad{fill:var(--bad)}
+.dg .ln{stroke:var(--ink);stroke-width:2;fill:none} .dg .ln.ac{stroke:var(--accent)} .dg .fa{fill:var(--accent)}
+.dg .sol{fill:var(--card);stroke:var(--ink);stroke-width:2} .dg .liq{fill:var(--accent);opacity:.16}
+.dg .bridge{stroke:var(--muted);stroke-width:14;fill:none;stroke-linejoin:round;opacity:.75} .dg .el{stroke:var(--ink);stroke-width:1.5}
+.dg .meter{fill:var(--card);stroke:var(--ink);stroke-width:2} .dg .dot{fill:var(--ink)}
+.dg .gbox{fill:var(--good-bg);stroke:var(--good)} .dg .bbox{fill:var(--bad-bg);stroke:var(--bad)}
+.bars{margin:10px 0}
+.bars>div{display:grid;grid-template-columns:130px 1fr 62px;gap:8px;align-items:center;margin:6px 0;font-size:15.5px}
+.bars .tr{display:block;background:var(--soft);border-radius:6px}
+.bars i{display:block;height:18px;min-width:4px;border-radius:6px;background:var(--bad)} .bars i.g{background:var(--good)} .bars i.n{background:var(--muted)}
+.tipbox{border:2px dashed var(--accent);border-radius:10px;padding:10px 14px;margin:12px 0}
+.card table{max-width:100%} .q table{font-size:16px}
+@media (max-width:560px){ td,th{padding:5px 7px} .q table{font-size:14.5px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="row"><h1>Grade 10 Chemistry: Test Prep</h1><div class="tools"><button class="btn ghost" id="wbbtn">Whiteboard</button><button class="btn ghost" id="calcbtn">Calculator</button><button class="btn ghost" id="sound">Sound: on</button></div></div>
+  <p class="sub">Redox, voltaic cells, batteries and corrosion. Learn a topic, then practise it. Every answer comes with the steps.</p>
+  <nav>
+    <button data-tab="learn" class="on">1. Learn</button>
+    <button data-tab="practice">2. Study guide questions</button>
+    <button data-tab="extra">3. Extra practice</button>
+    <button data-tab="test" id="testtab">4. Test (locked)</button>
+    <button data-tab="sheet">Rules &amp; words</button>
+  </nav>
+  <section id="learn"></section>
+  <section id="practice" class="hide"></section>
+  <section id="extra" class="hide"></section>
+  <section id="test" class="hide"></section>
+  <section id="sheet" class="hide"></section>
+</div>
+
+<div id="dock"><button id="wbside" title="Whiteboard" aria-label="Open or close the whiteboard">✏️</button><button id="calcside" title="Calculator" aria-label="Open or close the calculator">🧮</button></div>
+<div id="wb" class="hide" role="region" aria-label="Whiteboard">
+  <div class="wbbar">
+    <b>Whiteboard</b>
+    <button class="tool on" id="wbpen">Pen</button>
+    <button class="tool" id="wberase">Eraser</button>
+    <span class="swatches" id="wbcolors"></span>
+    <button class="tool" id="wbsize">Size: medium</button>
+    <button class="tool" id="wbclear">Clear</button>
+    <button class="tool" id="wbtall">Bigger</button>
+    <button class="tool" id="wbclose" aria-label="Close whiteboard">Close ✕</button>
+  </div>
+  <canvas id="wbcanvas"></canvas>
+</div>
+<div id="calc" class="hide" role="region" aria-label="Calculator">
+  <div class="calchead"><b>Calculator</b><button class="tool" id="calcclose" aria-label="Close calculator">✕</button></div>
+  <input id="calcin" type="text" inputmode="none" aria-label="Calculation" autocomplete="off" spellcheck="false">
+  <div id="calcout" aria-live="polite">&nbsp;</div>
+  <div id="calckeys"></div>
+  <small class="tip">You can also type with the keyboard. Press Enter for the answer.</small>
+</div>
+<script>
+// ---------- helpers ----------
+// m("x^2 + 5x") -> math with real superscripts
+function m(s){ return '<span class="math">' + String(s).replace(/\^\{([^}]+)\}/g,'<sup>$1</sup>').replace(/\^(-?\d+|[a-z])/g,'<sup>$1</sup>') + '</span>'; }
+function norm(v){ return String(v).trim().toLowerCase().replace(/\s+/g,'').replace(/[−–]/g,'-').replace(/^\+/,''); }
+function sameNum(a,b){ const x=parseFloat(norm(a)), y=parseFloat(norm(b)); return isFinite(x)&&isFinite(y)&&Math.abs(x-y)<1e-9 && /^-?\d*\.?\d+$/.test(norm(a)); }
+function ri(a,b){ return a+Math.floor(Math.random()*(b-a+1)); }
+function pick(arr){ return arr[ri(0,arr.length-1)]; }
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=ri(0,i);[a[i],a[j]]=[a[j],a[i]];} return a; }
+function sgn(n){ return n<0 ? '− '+Math.abs(n) : '+ '+n; }
+function neg(n){ return n<0 ? '−'+Math.abs(n) : ''+n; }           // nice minus sign
+function par(n){ return n<0 ? '('+neg(n)+')' : ''+n; }
+// build a polynomial string from [[coef,exp],...]
+function poly(terms, v){ v=v||'x'; let out='';
+  terms.forEach(([c,e],i)=>{ if(c===0) return; const a=Math.abs(c); const body=(e===0? a : (a===1?'':a)+v+(e===1?'':'^'+e));
+    out += (out==='' ? (c<0?'−':'')+body : (c<0?' − ':' + ')+body); });
+  return out||'0'; }
+
+// ---------- small graphs for the lessons (plain SVG, no library) ----------
+function graph(o){ const w=o.w||240,h=o.h||190,p=12, X0=o.x[0],X1=o.x[1],Y0=o.y[0],Y1=o.y[1];
+  const sx=x=>p+(x-X0)/(X1-X0)*(w-2*p), sy=y=>h-p-(y-Y0)/(Y1-Y0)*(h-2*p), r=n=>Math.round(n*10)/10;
+  let g='<svg viewBox="0 0 '+w+' '+h+'" role="img" aria-label="'+(o.alt||'graph')+'" style="font:12px sans-serif">';
+  const ax=sy(Math.min(Math.max(0,Y0),Y1)), ay=sx(Math.min(Math.max(0,X0),X1));
+  g+='<line x1="'+p+'" y1="'+r(ax)+'" x2="'+(w-p)+'" y2="'+r(ax)+'" style="stroke:var(--muted)" stroke-width="1.5"/><line x1="'+r(ay)+'" y1="'+p+'" x2="'+r(ay)+'" y2="'+(h-p)+'" style="stroke:var(--muted)" stroke-width="1.5"/>';
+  (o.xt||[]).forEach(t=>{ g+='<line x1="'+r(sx(t))+'" y1="'+r(ax-3)+'" x2="'+r(sx(t))+'" y2="'+r(ax+3)+'" style="stroke:var(--muted)"/><text x="'+r(sx(t))+'" y="'+r(ax+15)+'" text-anchor="middle" style="fill:var(--muted)">'+neg(t)+'</text>'; });
+  (o.yt||[]).forEach(t=>{ g+='<line x1="'+r(ay-3)+'" y1="'+r(sy(t))+'" x2="'+r(ay+3)+'" y2="'+r(sy(t))+'" style="stroke:var(--muted)"/><text x="'+r(ay-6)+'" y="'+r(sy(t)+4)+'" text-anchor="end" style="fill:var(--muted)">'+neg(t)+'</text>'; });
+  if(o.xl) g+='<text x="'+(w-p)+'" y="'+r(ax-6)+'" text-anchor="end" style="fill:var(--muted)">'+o.xl+'</text>';
+  if(o.yl) g+='<text x="'+r(ay+6)+'" y="'+(p+8)+'" style="fill:var(--muted)">'+o.yl+'</text>';
+  let d='', pen=false; const N=160;
+  for(let i=0;i<=N;i++){ const x=X0+(X1-X0)*i/N, y=o.f(x); if(y<Y0||y>Y1){ pen=false; continue; } d+=(pen?'L':'M')+r(sx(x))+' '+r(sy(y))+' '; pen=true; }
+  g+='<path d="'+d+'" fill="none" style="stroke:var(--accent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>';
+  (o.pts||[]).forEach(q=>{ const c=q.c||'var(--ink)'; g+='<circle cx="'+r(sx(q.x))+'" cy="'+r(sy(q.y))+'" r="5" style="fill:'+c+';stroke:var(--card)" stroke-width="1.5"/>';
+    if(q.t) g+='<text x="'+r(sx(q.x)+(q.dx||0))+'" y="'+r(sy(q.y)+(q.dy==null?-10:q.dy))+'" text-anchor="'+(q.a||'middle')+'" style="fill:'+c+';font-weight:700">'+q.t+'</text>'; });
+  (o.notes||[]).forEach(q=>{ g+='<text x="'+r(sx(q.x))+'" y="'+r(sy(q.y))+'" text-anchor="'+(q.a||'middle')+'" style="fill:var(--ink);font-weight:700">'+q.t+'</text>'; });
+  return g+'</svg>'; }
+function fig(svg,cap,cls){ return '<figure class="g'+(cls?' '+cls:'')+'">'+svg+'<figcaption>'+cap+'</figcaption></figure>'; }
+
+// ---------- LEARN: lessons ----------
+// c("Cu²⁺") -> a chemical formula that never breaks across two lines
+function c(s){ return '<span class="math">'+s+'</span>'; }
+
+// ----- pictures (drawn with code, so no image files are needed) -----
+function transferSVG(){ return '<svg class="dg" viewBox="0 0 470 150" role="img" aria-label="A magnesium atom gives two electrons to chlorine">'+
+ '<circle cx="110" cy="70" r="42" class="sol"/><text x="110" y="66" text-anchor="middle" class="big">Mg</text><text x="110" y="86" text-anchor="middle">loses 2e⁻</text>'+
+ '<circle cx="360" cy="70" r="42" class="sol"/><text x="360" y="66" text-anchor="middle" class="big">Cl₂</text><text x="360" y="86" text-anchor="middle">gains 2e⁻</text>'+
+ '<path d="M160 70 H300" class="ln ac" stroke-width="3"/><path d="M300 70 l-12 -7 v14 z" class="fa"/>'+
+ '<text x="232" y="58" text-anchor="middle" class="acc">2 electrons</text>'+
+ '<text x="110" y="134" text-anchor="middle" class="bad">OXIDIZED (0 → +2)</text><text x="360" y="134" text-anchor="middle" class="good">REDUCED (0 → −1)</text></svg>'; }
+
+function cellSVG(){ return '<svg class="dg" viewBox="0 0 470 330" role="img" aria-label="A zinc and copper voltaic cell. Electrons flow through the wire from the zinc anode to the copper cathode. A salt bridge joins the two beakers.">'+
+ '<rect x="52" y="172" width="136" height="96" class="liq"/><rect x="282" y="172" width="136" height="96" class="liq"/>'+
+ '<path d="M165 215 V125 H305 V215" class="bridge"/>'+
+ '<path d="M50 140 V270 H190 V140" class="ln"/><path d="M280 140 V270 H420 V140" class="ln"/>'+
+ '<rect x="96" y="100" width="26" height="140" rx="3" style="fill:#8a94a3" class="el"/><rect x="348" y="100" width="26" height="140" rx="3" style="fill:#c77b3a" class="el"/>'+
+ '<path d="M109 100 V46 H361 V100" class="ln"/>'+
+ '<circle cx="235" cy="46" r="17" class="meter"/><text x="235" y="51" text-anchor="middle" class="big">V</text>'+
+ '<path d="M130 26 H196" class="ln ac" stroke-width="3"/><path d="M200 26 l-12 -7 v14 z" class="fa"/><path d="M270 26 H336" class="ln ac" stroke-width="3"/><path d="M340 26 l-12 -7 v14 z" class="fa"/>'+
+ '<text x="235" y="16" text-anchor="middle" class="acc">electrons (e⁻) move this way in the wire</text>'+
+ '<text x="235" y="114" text-anchor="middle">salt bridge (ions move)</text>'+
+ '<text x="109" y="92" text-anchor="end" dx="-8">Zn</text><text x="361" y="92" dx="20">Cu</text>'+
+ '<text x="120" y="261" text-anchor="middle" class="sm">ZnSO₄(aq)</text><text x="350" y="261" text-anchor="middle" class="sm">CuSO₄(aq)</text>'+
+ '<text x="120" y="292" text-anchor="middle" class="bad">ANODE: oxidation</text><text x="120" y="312" text-anchor="middle">Zn → Zn²⁺ + 2e⁻</text>'+
+ '<text x="350" y="292" text-anchor="middle" class="good">CATHODE: reduction</text><text x="350" y="312" text-anchor="middle">Cu²⁺ + 2e⁻ → Cu</text></svg>'; }
+
+function ladderSVG(){ const X=e=>Math.round(30+(e+2.6)/3.2*410); const M=[['Mg',-2.37],['Zn',-0.76],['Fe',-0.44],['Sn',-0.14],['Cu',0.34]];
+ let s='<svg class="dg" viewBox="0 0 470 160" role="img" aria-label="A number line of reduction potentials. Magnesium and zinc are to the left of iron and protect it. Tin and copper are to the right of iron and make it corrode faster.">';
+ s+='<rect x="30" y="38" width="'+(X(-0.44)-30-12)+'" height="24" rx="6" class="gbox"/><text x="'+Math.round((30+X(-0.44)-12)/2)+'" y="55" text-anchor="middle" class="good">these PROTECT iron</text>';
+ s+='<rect x="'+(X(-0.44)+12)+'" y="38" width="'+(440-X(-0.44)-12)+'" height="24" rx="6" class="bbox"/><text x="'+Math.round((X(-0.44)+12+440)/2)+'" y="55" text-anchor="middle" class="bad">iron rusts faster</text>';
+ s+='<path d="M30 92 H440" class="ln"/>';
+ M.forEach(q=>{ const x=X(q[1]); s+='<circle cx="'+x+'" cy="92" r="'+(q[0]==='Fe'?8:6)+'" class="'+(q[0]==='Fe'?'fa':'dot')+'"/><text x="'+x+'" y="80" text-anchor="middle" class="big">'+q[0]+'</text><text x="'+x+'" y="114" text-anchor="middle" class="sm">'+(q[1]<0?'−':'+')+Math.abs(q[1]).toFixed(2)+'</text>'; });
+ s+='<text x="235" y="142" text-anchor="middle">← more negative E° = loses electrons more easily</text></svg>'; return s; }
+
+function barsHTML(){ const D=[['Magnesium',0.01,'g'],['Zinc',0.03,'g'],['None (bare nail)',0.42,'n'],['Tin',0.61,'b'],['Copper',0.95,'b']];
+ return '<div class="bars">'+D.map(d=>'<div><span>'+d[0]+'</span><span class="tr"><i class="'+d[2]+'" style="width:'+Math.round(d[1]/0.95*100)+'%"></i></span><b>'+d[1].toFixed(2)+' g</b></div>').join('')+'</div>'; }
+
+const ETABLE_B3='<table><tr><th>Reduction half-reaction</th><th>E° (V)</th></tr><tr><td>Zn²⁺(aq) + 2e⁻ → Zn(s)</td><td>−0.76</td></tr><tr><td>Cu²⁺(aq) + 2e⁻ → Cu(s)</td><td>+0.34</td></tr><tr><td>Mg²⁺(aq) + 2e⁻ → Mg(s)</td><td>−2.37</td></tr><tr><td>Ag⁺(aq) + e⁻ → Ag(s)</td><td>+0.80</td></tr></table>';
+const BATT_B4='<table><tr><th>Battery</th><th>Type</th><th>Stored chemical energy (Wh)</th><th>Useful electrical energy (Wh)</th></tr><tr><td>Zinc–carbon</td><td>Primary</td><td>200</td><td>100</td></tr><tr><td>Nickel–metal hydride</td><td>Secondary</td><td>200</td><td>150</td></tr><tr><td>Lithium-polymer</td><td>Secondary</td><td>200</td><td>184</td></tr></table>';
+const BATT_C1='<table><tr><th>Battery pack</th><th>Mass (kg)</th><th>Cycle life (charge cycles)</th><th>Purchase cost (AED)</th></tr><tr><td>Lithium-ion</td><td>0.90</td><td>1000</td><td>470</td></tr><tr><td>Nickel–metal hydride (NiMH)</td><td>1.60</td><td>600</td><td>380</td></tr><tr><td>Lead–acid</td><td>2.30</td><td>400</td><td>260</td></tr></table>';
+const C1_STORY='A UAE date farm needs a rechargeable battery for a field sensor. The battery must have a mass of <b>no more than 2.00 kg</b> and cost <b>no more than AED 500</b>. Among the batteries that are allowed, the farm cares most about <b>cycle life</b>, then <b>mass</b>, then <b>purchase cost</b>.'+BATT_C1;
+const D1_R1='<table><tr><th>Metal touching the iron nail</th><th>Iron mass lost (g)</th></tr><tr><td>None (bare nail)</td><td>0.42</td></tr><tr><td>Magnesium</td><td>0.01</td></tr><tr><td>Zinc</td><td>0.03</td></tr><tr><td>Tin</td><td>0.61</td></tr><tr><td>Copper</td><td>0.95</td></tr></table>';
+const D1_R2='<table><tr><th>Reduction half-reaction</th><th>E° (V)</th></tr><tr><td>Mg²⁺ + 2e⁻ → Mg</td><td>−2.37</td></tr><tr><td>Zn²⁺ + 2e⁻ → Zn</td><td>−0.76</td></tr><tr><td>Fe²⁺ + 2e⁻ → Fe</td><td>−0.44</td></tr><tr><td>Sn²⁺ + 2e⁻ → Sn</td><td>−0.14</td></tr><tr><td>Cu²⁺ + 2e⁻ → Cu</td><td>+0.34</td></tr></table>';
+const D1_STORY='Identical iron nails were left in salt water (3% sodium chloride) for 14 days. Each nail was touching a strip of a second metal.'+D1_R1+D1_R2;
+
+const LESSONS=[
+{t:'Oxidation and reduction (OIL RIG)', html:`
+  <h4>Words you need first</h4>
+  <ul class="words">
+   <li><b>Atom:</b> the tiny building block that everything is made of. Each element (like magnesium, Mg) is one kind of atom.</li>
+   <li><b>Electron:</b> an even tinier particle inside an atom. It has a <b>negative</b> charge. We write it as ${c('e⁻')}.</li>
+   <li><b>Ion:</b> an atom that has lost or gained electrons, so it now has a charge. ${c('Mg²⁺')} is a magnesium atom that lost 2 electrons. ${c('Cl⁻')} is a chlorine atom that gained 1 electron.</li>
+  </ul>
+  <div class="plain"><b>Why does losing electrons make something positive?</b><br>Electrons are negative. If you take away something negative, what is left is more positive. It is like removing a debt: you end up better off. So an atom that <b>loses</b> 2 electrons becomes <b>2+</b>, and an atom that <b>gains</b> 1 electron becomes <b>1−</b>.</div>
+  <h4>The two words</h4>
+  <div class="rule"><b>Oxidation</b> = <b>loss</b> of electrons. The oxidation number goes <b>up</b>.<br><b>Reduction</b> = <b>gain</b> of electrons. The oxidation number goes <b>down</b>.<br>Memory aid: <b>OIL RIG</b>. <b>O</b>xidation <b>I</b>s <b>L</b>oss, <b>R</b>eduction <b>I</b>s <b>G</b>ain.</div>
+  <p>"Reduction" sounds like it should mean losing something. The trick: it is the <b>number</b> that is reduced. Gaining negative electrons pulls the oxidation number down.</p>
+  <h4>They always happen together</h4>
+  <p>Electrons cannot vanish. If one substance loses electrons, another one has to catch them. A reaction where this happens is called a <b>redox</b> reaction (<b>red</b>uction + <b>ox</b>idation).</p>
+  <div class="graphs">${fig(transferSVG(),c('Mg + Cl₂ → MgCl₂')+'<br>Magnesium hands 2 electrons to chlorine.','wide')}</div>
+  <h4>Agents</h4>
+  <p>An <b>agent</b> is the substance that <i>causes</i> the change in the other one.</p>
+  <div class="rule"><b>Reducing agent:</b> gives electrons away, so it makes the other substance reduced. It is <b>itself oxidized</b>.<br><b>Oxidizing agent:</b> takes electrons, so it makes the other substance oxidized. It is <b>itself reduced</b>.</div>
+  <div class="plain"><b>Think of a travel agent.</b> A travel agent arranges travel for <i>someone else</i>. In the same way, an oxidizing agent arranges oxidation for the <i>other</i> substance. What happens to the agent itself is the opposite.</div>
+  <div class="warn"><b>Common mistake:</b> saying the oxidizing agent is the one that is oxidized. It is the other way round. Find who is reduced: that one is the oxidizing agent.</div>
+  <h4>How to spot a redox reaction</h4>
+  <p>Look for an oxidation number that changes. An easy sign: an element standing alone on one side (like ${c('Na')} or ${c('Cl₂')}) that is inside a compound on the other side. If no oxidation number changes, it is not redox.</p>`,
+ ex:{q:`In ${c('Mg + Cl₂ → MgCl₂')}, which substance is oxidized, which is reduced, and which is the oxidizing agent?`,
+  steps:[`Magnesium starts as a plain element, so its oxidation number is 0. In ${c('MgCl₂')} it is ${c('Mg²⁺')}, which is +2.`,`0 to +2 is going <b>up</b>. Magnesium lost 2 electrons. Oxidation Is Loss, so <b>magnesium is oxidized</b>.`,`Chlorine starts as ${c('Cl₂')}, a plain element, so 0. In ${c('MgCl₂')} each chlorine is ${c('Cl⁻')}, which is −1.`,`0 to −1 is going <b>down</b>. Chlorine gained electrons. Reduction Is Gain, so <b>chlorine is reduced</b>.`,`The oxidizing agent is the one that is <i>reduced</i>, because it took the electrons. So ${c('Cl₂')} is the <b>oxidizing agent</b> and Mg is the <b>reducing agent</b>.`]},
+ checks:[{q:'When a species is reduced, its oxidation number …',options:['increases','decreases','stays the same','always becomes zero'],a:1,why:'Reduction is gain of electrons. Electrons are negative, so the number goes down. It does not have to reach zero.'},
+         {q:`Which reaction is a redox reaction?`,options:[c('NaCl + AgNO₃ → AgCl + NaNO₃'),c('2Na + Cl₂ → 2NaCl'),c('HCl + NaOH → NaCl + H₂O'),c('CaCO₃ → CaO + CO₂')],a:1,why:`Na and ${c('Cl₂')} start as plain elements (0) and end as ${c('Na⁺')} (+1) and ${c('Cl⁻')} (−1). Electrons moved. In the other three, no oxidation number changes; the ions just swap partners or split up.`}]},
+
+{t:'Oxidation numbers', html:`
+  <h4>What is an oxidation number?</h4>
+  <p>An <b>oxidation number</b> is a score we give each atom. It keeps track of electrons. A positive score means the atom has lost electrons. A negative score means it has gained electrons. Zero means nothing has happened to it yet.</p>
+  <h4>Words you need first</h4>
+  <ul class="words">
+   <li><b>Subscript:</b> the small low number in a formula. It tells you how many of that atom there are. ${c('Fe₂O₃')} has 2 iron atoms and 3 oxygen atoms.</li>
+   <li><b>Monatomic ion:</b> an ion made of one atom, like ${c('Zn²⁺')}.</li>
+   <li><b>Polyatomic ion:</b> a group of atoms with one shared charge, like ${c('SO₄²⁻')} (sulfate) or ${c('MnO₄⁻')}.</li>
+  </ul>
+  <h4>The six rules</h4>
+  <div class="rule">
+  <b>1.</b> An element on its own is <b>0</b>. Examples: ${c('Mg')}, ${c('Cl₂')}, ${c('O₂')}.<br>
+  <b>2.</b> A one-atom ion is its <b>charge</b>. ${c('Zn²⁺')} is +2. ${c('Cl⁻')} is −1.<br>
+  <b>3.</b> Oxygen in a compound is usually <b>−2</b>.<br>
+  <b>4.</b> Hydrogen with nonmetals is usually <b>+1</b>.<br>
+  <b>5.</b> Group 1 metals (Na, K) are <b>+1</b>. Group 2 metals (Mg, Ca) are <b>+2</b>.<br>
+  <b>6.</b> Everything adds up to the <b>total charge</b>: 0 for a neutral compound, or the charge written on an ion.</div>
+  <div class="warn"><b>Common mistake:</b> thinking ${c('Cl₂')} is −1 because chlorine is "usually" −1. ${c('Cl₂')} is the element on its own, so rule 1 wins: it is 0.</div>
+  <h4>Finding an unknown one</h4>
+  <p>Call the unknown number ${c('x')} and write a sum using rule 6.</p>
+  <div class="plain"><b>Recipe</b><br>(how many of the unknown atom × x) + (how many oxygens × −2) + … = total charge<br>Then solve for x.</div>
+  <p>Example from the guide: Mn in ${c('MnO₄⁻')}. One Mn, four O, total charge −1.<br>${c('x + 4(−2) = −1')} → ${c('x − 8 = −1')} → ${c('x = +7')}.</p>
+  <div class="warn"><b>Two things people forget:</b><br>1. If there are 2 of the unknown atom, write ${c('2x')} and divide by 2 at the end.<br>2. If it is an ion, the sum equals the ion's charge, <b>not</b> zero.</div>
+  <p>Always write the sign: +3, not just 3.</p>`,
+ ex:{q:`Find the oxidation number of chromium in ${c('Cr₂O₇²⁻')}. Use −2 for oxygen.`,
+  steps:[`Count the atoms: 2 chromium, 7 oxygen. The charge on the whole ion is −2.`,`Write the sum: ${c('2x + 7(−2) = −2')}.`,`Work out the oxygen part: ${c('7 × −2 = −14')}. So ${c('2x − 14 = −2')}.`,`Add 14 to both sides: ${c('2x = +12')}.`,`Divide by 2, because there are two chromium atoms: ${c('x = +6')}. Each chromium is <b>+6</b>.`]},
+ checks:[{q:`What is the oxidation number of chlorine in ${c('Cl₂(g)')}?`,options:['−1','+1','+2','0'],a:3,why:`${c('Cl₂')} is an element on its own, so it is 0 (rule 1).`},
+         {q:`What is the oxidation number of iron in ${c('Fe₂O₃')}?`,options:['+2','+3','+6','−3'],a:1,why:`${c('2x + 3(−2) = 0')}, so ${c('2x = +6')} and ${c('x = +3')}. +6 is the total for both iron atoms; you still have to divide by 2.`}]},
+
+{t:'Half-reactions', html:`
+  <h4>What is a half-reaction?</h4>
+  <p>A redox reaction is really two things happening at once: one substance losing electrons and another gaining them. A <b>half-reaction</b> shows just <b>one</b> of those, with the electrons written in.</p>
+  <h4>Words you need first</h4>
+  <ul class="words">
+   <li><b>Reactants:</b> what you start with. They are on the <b>left</b> of the arrow.</li>
+   <li><b>Products:</b> what you end with. They are on the <b>right</b> of the arrow.</li>
+   <li>${c('e⁻')}: one electron. ${c('2e⁻')} means two electrons.</li>
+  </ul>
+  <h4>Which side are the electrons on?</h4>
+  <div class="rule"><b>Oxidation:</b> electrons on the <b>right</b>. They were lost, so they come out as a product.<br>Example: ${c('Na → Na⁺ + e⁻')}<br><br><b>Reduction:</b> electrons on the <b>left</b>. They were gained, so they go in as a reactant.<br>Example: ${c('Br₂ + 2e⁻ → 2Br⁻')}</div>
+  <div class="plain"><b>This works even for scary ones.</b> ${c('MnO₄⁻ + 8H⁺ + 5e⁻ → Mn²⁺ + 4H₂O')} looks hard, but you only need to find ${c('e⁻')}. It is on the left, so it is a <b>reduction</b>. (Check: Mn goes from +7 to +2. The number went down.)</div>
+  <h4>Check that it balances</h4>
+  <p>Two things must be the same on both sides:</p>
+  <ul class="words">
+   <li><b>Atoms:</b> the same number of each element on the left and right.</li>
+   <li><b>Charge:</b> add up all the charges on each side. Each ${c('e⁻')} counts as −1.</li>
+  </ul>
+  <p>${c('Na → Na⁺ + e⁻')}: left side charge is 0. Right side is (+1) + (−1) = 0. Balanced.</p>
+  <h4>How to write an oxidation half-reaction for a metal</h4>
+  <div class="plain"><b>Recipe</b><br>1. Write the metal on the left.<br>2. Write its ion on the right.<br>3. Add electrons on the right. The number of electrons equals the charge on the ion.</div>
+  <p>Zinc forms ${c('Zn²⁺')}, so: ${c('Zn → Zn²⁺ + 2e⁻')}.</p>`,
+ ex:{q:`Aluminium metal turns into ${c('Al³⁺')} ions. Write the half-reaction and say whether it is oxidation or reduction.`,
+  steps:[`Metal on the left, ion on the right: ${c('Al → Al³⁺')}.`,`The left side has charge 0. The right side has +3. They do not match yet.`,`Add 3 electrons to the right. Each one is −1, so (+3) + (−3) = 0. Now the charge balances: ${c('Al → Al³⁺ + 3e⁻')}.`,`The electrons are on the right (products), which means they were lost. Loss of electrons is <b>oxidation</b>.`,`Double check with oxidation numbers: Al goes from 0 to +3. It went up, so it is oxidation.`]},
+ checks:[{q:`Classify: ${c('2I⁻ → I₂ + 2e⁻')}`,options:['Oxidation','Reduction'],a:0,why:'The electrons are on the right, so they were lost. Iodine goes from −1 to 0, which is up. Oxidation.'},
+         {q:`Classify: ${c('Sn⁴⁺ + 2e⁻ → Sn²⁺')}`,options:['Oxidation','Reduction'],a:1,why:'The electrons are on the left, so they were gained. Tin goes from +4 to +2, which is down. Reduction.'}]},
+
+{t:'Displacement reactions and spectator ions', html:`
+  <h4>What is a displacement reaction?</h4>
+  <p>Some metals lose electrons more easily than others. We say they are <b>more reactive</b>. When a more reactive metal is put into a solution that contains a less reactive metal, it <b>pushes the other metal out</b> and takes its place.</p>
+  <div class="rule">A <b>more reactive</b> metal displaces a <b>less reactive</b> metal from its solution.</div>
+  <h4>Words you need first</h4>
+  <ul class="words">
+   <li>${c('(s)')} means solid. ${c('(aq)')} means dissolved in water. ${c('(g)')} means gas.</li>
+   <li>When a compound like ${c('CuSO₄')} dissolves, it splits into its ions: ${c('Cu²⁺')} and ${c('SO₄²⁻')} (sulfate). They float around separately.</li>
+  </ul>
+  <h4>The example you must know</h4>
+  <p>A zinc strip is placed in blue copper(II) sulfate solution: ${c('Zn(s) + CuSO₄(aq) → ZnSO₄(aq) + Cu(s)')}</p>
+  <p>Write the oxidation number of each element before and after:</p>
+  <table><tr><th>Element</th><th>Reactants</th><th>Products</th><th>What happened</th></tr>
+  <tr><td>Zn</td><td>0</td><td>+2</td><td>went up: oxidized</td></tr>
+  <tr><td>Cu</td><td>+2</td><td>0</td><td>went down: reduced</td></tr>
+  <tr><td>S</td><td>+6</td><td>+6</td><td>no change</td></tr>
+  <tr><td>O</td><td>−2</td><td>−2</td><td>no change</td></tr></table>
+  <p>Zinc is a plain element at the start (0) and ${c('Zn²⁺')} at the end (+2). Copper is ${c('Cu²⁺')} at the start (+2) and a plain element at the end (0). The zinc gave its 2 electrons to the copper ions.</p>
+  <h4>Spectator ions</h4>
+  <p>A spectator at a football match watches but does not play. A <b>spectator ion</b> is the same: it is there on both sides, in the same form, with the same oxidation number. It takes no part in the electron transfer.</p>
+  <p>Here the sulfate ion, ${c('SO₄²⁻')}, is the spectator. It starts next to copper and ends next to zinc, but nothing happens to it.</p>
+  <h4>The sentence that gets the marks</h4>
+  <div class="plain">"The oxidation number of <b>X</b> changes from <b>__</b> to <b>__</b>, so it has <b>lost / gained __ electron(s)</b>, which is <b>oxidation / reduction</b>."</div>
+  <p>For zinc: "The oxidation number of zinc changes from 0 to +2, so it has lost 2 electrons, which is oxidation."</p>
+  <div class="warn"><b>Naming the agents here:</b> the oxidizing agent is ${c('Cu²⁺')} (it took the electrons and was reduced). The reducing agent is Zn (it gave the electrons and was oxidized).</div>`,
+ ex:{q:`Magnesium ribbon reacts with hydrochloric acid: ${c('Mg(s) + 2HCl(aq) → MgCl₂(aq) + H₂(g)')}. Does magnesium lose or gain electrons? Write its half-reaction and explain.`,
+  steps:[`Magnesium starts as a plain element: oxidation number 0.`,`In ${c('MgCl₂')} it is ${c('Mg²⁺')} (Group 2 metals are +2): oxidation number +2.`,`0 to +2 is up, so magnesium <b>loses</b> 2 electrons.`,`Half-reaction, electrons on the right because they are lost: ${c('Mg → Mg²⁺ + 2e⁻')}.`,`The sentence: "The oxidation number of magnesium changes from 0 to +2, so it has lost 2 electrons, which is oxidation."`,`Extra: hydrogen goes from +1 in HCl to 0 in ${c('H₂')}, so ${c('H⁺')} is reduced. ${c('Cl⁻')} is −1 on both sides, so it is the spectator ion.`]},
+ checks:[{q:`In ${c('Zn + CuSO₄ → ZnSO₄ + Cu')}, which is the spectator ion?`,options:[c('Zn²⁺'),c('Cu²⁺'),c('SO₄²⁻'),'There is none'],a:2,why:'Sulfate is the same on both sides. S stays +6 and O stays −2.'},
+         {q:`In the same reaction, which is the reducing agent?`,options:['Zn',c('Cu²⁺'),c('SO₄²⁻'),'Cu'],a:0,why:'Zinc gives away electrons and is oxidized. The one that is oxidized is the reducing agent.'}]},
+
+{t:'Voltaic cells: anode, cathode and electron flow', html:`
+  <h4>What is a voltaic cell?</h4>
+  <p>In lesson 4 the zinc touched the copper ions, so the electrons jumped straight across. A <b>voltaic cell</b> separates the two halves and makes the electrons travel through a <b>wire</b> to get there. Electrons moving through a wire is electricity. That is how a battery works.</p>
+  <div class="rule">A voltaic cell turns <b>chemical energy → electrical energy</b> using a <b>spontaneous</b> redox reaction.</div>
+  <p><b>Spontaneous</b> means it happens by itself, with no outside push.</p>
+  <h4>Words you need first</h4>
+  <ul class="words">
+   <li><b>Electrode:</b> the strip of metal dipped in each solution.</li>
+   <li><b>Half-cell:</b> one beaker with its electrode and solution. Two half-cells make a cell.</li>
+   <li><b>External wire:</b> the wire outside the beakers that joins the two electrodes.</li>
+   <li><b>Salt bridge:</b> a tube of salt solution that links the two beakers.</li>
+  </ul>
+  <div class="graphs">${fig(cellSVG(),'The Zn–Cu cell. Zinc loses electrons, they travel through the wire, and copper ions pick them up.','wide')}</div>
+  <h4>Anode and cathode</h4>
+  <div class="rule"><b>An</b>ode = <b>Ox</b>idation. <b>Red</b>uction = <b>Cat</b>hode.<br>Memory aid: <b>AN OX</b> and a <b>RED CAT</b>.</div>
+  <p>Electrons are made at the anode (oxidation loses them) and used at the cathode (reduction gains them). So:</p>
+  <div class="rule">Electrons flow through the external wire <b>from the anode to the cathode</b>.</div>
+  <div class="warn"><b>Common mistake:</b> saying electrons go through the salt bridge. They do not. <b>Electrons</b> travel in the <b>wire</b>. <b>Ions</b> travel in the <b>salt bridge</b>.</div>
+  <h4>What the salt bridge is for</h4>
+  <p>As zinc turns into ${c('Zn²⁺')}, the left beaker fills up with positive charge. As ${c('Cu²⁺')} is used up, the right beaker is left with too much negative charge. If nothing fixed this, the electrons would stop moving.</p>
+  <p>The salt bridge lets ions move between the beakers. This keeps each half-cell <b>electrically neutral</b> and <b>completes the circuit</b>, so the electrons keep flowing.</p>
+  <h4>Which metal is the anode?</h4>
+  <p>You are given a table of E° values (there is more about these in the next lesson). For now:</p>
+  <div class="rule">The metal with the <b>more negative E°</b> is oxidized more easily, so it is the <b>anode</b>. The other one is the cathode.</div>
+  <p>Zinc is −0.76 V and copper is +0.34 V. Zinc is more negative, so zinc is the anode.</p>`,
+ ex:{q:`A cell is made from magnesium (E° = −2.37 V) and silver (E° = +0.80 V). Identify the anode, the cathode and the direction the electrons flow.`,
+  steps:[`Compare the two E° values: −2.37 and +0.80.`,`−2.37 is more negative, so magnesium is oxidized more easily. <b>Magnesium is the anode</b> (AN OX).`,`That leaves <b>silver as the cathode</b>, where reduction happens (RED CAT).`,`Electrons flow in the wire from anode to cathode: <b>from the magnesium electrode to the silver electrode</b>.`]},
+ checks:[{q:'In a voltaic cell, the anode is the electrode where …',options:['reduction occurs','oxidation occurs','electrons are made from nothing','the salt bridge is attached'],a:1,why:'AN OX: anode = oxidation.'},
+         {q:'In the external wire of a voltaic cell, electrons flow …',options:['from cathode to anode','from anode to cathode','through the salt bridge','in both directions at once'],a:1,why:'Electrons are lost at the anode and travel through the wire to the cathode, where they are gained.'}]},
+
+{t:'Standard cell potential (E°cell)', html:`
+  <h4>What does E° mean?</h4>
+  <p>Every metal ion gets a number called its <b>standard reduction potential</b>, written E° and measured in <b>volts (V)</b>. It tells you how strongly the ion wants to <b>gain</b> electrons (be reduced).</p>
+  <ul class="words">
+   <li>A big <b>positive</b> E° (like ${c('Ag⁺')}, +0.80 V): the ion really wants electrons.</li>
+   <li>A big <b>negative</b> E° (like ${c('Mg²⁺')}, −2.37 V): the ion does not want electrons. So the <b>metal</b> happily gives them away.</li>
+  </ul>
+  <div class="rule">More negative E° = the metal is <b>more easily oxidized</b> = more reactive = it is the <b>anode</b>.</div>
+  <h4>Which number is "more negative"?</h4>
+  <div class="plain">Think of a thermometer. −2.37 is colder than −0.76, and −0.76 is colder than +0.34. The "coldest" number is the most negative. So out of Zn (−0.76), Cu (+0.34), Mg (−2.37) and Ag (+0.80), magnesium is the most easily oxidized.</div>
+  <h4>The formula</h4>
+  <div class="rule"><b>E°cell = E°cathode − E°anode</b></div>
+  <p>E°cell is the voltage of the whole cell: how hard it pushes electrons through the wire.</p>
+  <div class="plain"><b>Recipe</b><br>1. Find the two E° values in the table.<br>2. The more negative one is the anode. The other is the cathode.<br>3. Write the formula.<br>4. Put the numbers in, <b>with their signs, in brackets</b>.<br>5. Work it out and write <b>V</b> after the answer.</div>
+  <p>Zn–Cu cell: ${c('E°cell = (+0.34 V) − (−0.76 V) = +1.10 V')}</p>
+  <div class="warn"><b>Three traps:</b><br>1. <b>Minus a negative is a plus.</b> ${c('0.34 − (−0.76)')} is ${c('0.34 + 0.76')}. Brackets stop you losing the sign.<br>2. <b>Do not multiply</b> E° by the number of electrons. Use the table values exactly as given, even for ${c('Ag⁺ + e⁻')} which has only one electron.<br>3. A cell that works has a <b>positive</b> E°cell. If you get a negative answer, you have the anode and cathode the wrong way round.</div>
+  <p>The exam wants three things in a "calculate" answer: <b>formula → substitution with signs → answer with units</b>.</p>`,
+ ex:{q:`Calculate the standard cell potential of a Mg–Ag cell (Mg: −2.37 V, Ag: +0.80 V). Then compare it with the Zn–Cu cell (+1.10 V).`,
+  steps:[`More negative is −2.37, so <b>Mg is the anode</b> and Ag is the cathode.`,`Formula: ${c('E°cell = E°cathode − E°anode')}.`,`Substitute with signs: ${c('E°cell = (+0.80 V) − (−2.37 V)')}.`,`Minus a negative is a plus: ${c('0.80 + 2.37 = 3.17')}. So ${c('E°cell = +3.17 V')}.`,`Compare: +3.17 V is bigger than +1.10 V. The difference is ${c('3.17 − 1.10 = 2.07 V')}.`,`Sentence: "The Mg–Ag cell has the greater standard cell potential, by 2.07 V."`]},
+ checks:[{q:`A cell uses Zn (−0.76 V) and Cu (+0.34 V). What is E°cell?`,options:['+1.10 V','−1.10 V','+0.42 V','−0.42 V'],a:0,why:`${c('(+0.34) − (−0.76) = 0.34 + 0.76 = +1.10 V')}. Getting 0.42 means the minus-a-negative was missed.`},
+         {q:`Which metal is most easily oxidized? Zn (−0.76 V), Cu (+0.34 V), Mg (−2.37 V), Ag (+0.80 V)`,options:['Zn','Cu','Mg','Ag'],a:2,why:'Magnesium has the most negative E°. Its ions are the least likely to gain electrons, so the metal loses them most readily.'}]},
+
+{t:'Battery efficiency and battery types', html:`
+  <h4>Words you need first</h4>
+  <ul class="words">
+   <li><b>Battery:</b> one or more voltaic cells packed together.</li>
+   <li><b>Wh (watt-hour):</b> a unit of energy. You do not need to convert it. Just treat it like any other unit.</li>
+   <li><b>Stored chemical energy:</b> the total energy inside the battery's chemicals.</li>
+   <li><b>Useful electrical energy:</b> the part that actually comes out as electricity. The rest is wasted, mostly as heat.</li>
+  </ul>
+  <h4>Efficiency</h4>
+  <p><b>Efficiency</b> is the percentage of the stored energy that comes out as useful electricity.</p>
+  <div class="rule"><b>Efficiency (%) = (useful electrical energy ÷ stored chemical energy) × 100</b></div>
+  <p>Zinc–carbon battery: stores 200 Wh, gives 100 Wh.<br>${c('Efficiency = (100 ÷ 200) × 100 = 50%')}</p>
+  <p>Lithium-polymer battery: stores 200 Wh, gives 184 Wh.<br>${c('Efficiency = (184 ÷ 200) × 100 = 92%')}</p>
+  <div class="warn"><b>Common mistakes:</b> dividing the wrong way round (useful always goes on top, and it is the smaller number), and forgetting the % sign. An efficiency can never be more than 100%.</div>
+  <h4>Working backwards</h4>
+  <p>Sometimes you get the efficiency and have to find one of the energies.</p>
+  <div class="plain"><b>First turn the percentage into a decimal</b> by dividing by 100. So 90% is 0.90.<br><br><b>stored = useful ÷ decimal</b><br><b>useful = stored × decimal</b><br><br>Quick check: stored energy must come out <b>bigger</b> than useful energy.</div>
+  <h4>Primary and secondary batteries</h4>
+  <div class="rule"><b>Primary battery:</b> not normally rechargeable. Use it once. Example: zinc–carbon.<br><b>Secondary battery:</b> designed to be recharged. Examples: lithium-ion, nickel–metal hydride, lead–acid.</div>
+  <p>Memory aid: a <b>secondary</b> battery gets a <b>second</b> life.</p>
+  <h4>Comparing batteries</h4>
+  <p>Use the data you are given: <b>mass</b>, <b>cycle life</b> (how many times it can be charged before it wears out), <b>cost</b> and <b>efficiency</b>. Always <b>quote the numbers</b>, with units.</p>`,
+ ex:{q:`A battery delivers 135 Wh of useful electrical energy and has an efficiency of 90%. How much chemical energy did it store?`,
+  steps:[`Write the formula: ${c('Efficiency = (useful ÷ stored) × 100')}.`,`We want "stored", so rearrange: ${c('stored = useful ÷ (efficiency as a decimal)')}.`,`Turn 90% into a decimal: ${c('90 ÷ 100 = 0.90')}.`,`Substitute: ${c('stored = 135 ÷ 0.90 = 150 Wh')}.`,`Check: 150 is bigger than 135, which makes sense. And ${c('(135 ÷ 150) × 100 = 90%')}.`]},
+ checks:[{q:'A primary battery is one that …',options:['is designed to be recharged many times','is not normally rechargeable','always has the highest efficiency','contains only lead'],a:1,why:'Primary = use once. Secondary = rechargeable.'},
+         {q:'A battery stores 200 Wh and delivers 150 Wh of useful energy. What is its efficiency?',options:['133%','50%','75%','25%'],a:2,why:`${c('(150 ÷ 200) × 100 = 75%')}. 133% is what you get if you divide the wrong way round, and it is impossible.`}]},
+
+{t:'Choosing the best option from data', html:`
+  <p>Part C of the exam gives you a table and asks you to pick the best option and <b>justify</b> it. There is a method that works every time.</p>
+  <h4>Words you need first</h4>
+  <ul class="words">
+   <li><b>Limit (or constraint):</b> a rule the option must obey. "No more than 2.00 kg" means 2.00 or less.</li>
+   <li><b>Eligible:</b> allowed, because it passes every limit.</li>
+   <li><b>Priority order:</b> what matters most, then second most, and so on.</li>
+   <li><b>Trade-off:</b> the thing you give up to get what you want.</li>
+  </ul>
+  <div class="rule"><b>The method</b><br>
+  <b>1. Limits first.</b> Check every option against every limit. Cross out any option that fails even one.<br>
+  <b>2. Then priorities.</b> Compare what is left using the priority order you are given. Start with the top priority.<br>
+  <b>3. Quote numbers.</b> Every comparison needs values from the table, with units.<br>
+  <b>4. Name the trade-off.</b> Say what the choice costs you, with a number.</div>
+  <h4>Worked through: the date farm battery</h4>
+  <p>${C1_STORY}</p>
+  <p><b>Step 1, limits.</b> Lead–acid is 2.30 kg. That is more than 2.00 kg, so it is <b>out</b>. It does not matter that it is the cheapest. Lithium-ion (0.90 kg, AED 470) and NiMH (1.60 kg, AED 380) pass both limits.</p>
+  <p><b>Step 2, priorities.</b> Top priority is cycle life. Lithium-ion has 1000 cycles, NiMH has 600. Lithium-ion wins on the top priority, and it is lighter too.</p>
+  <p><b>Step 4, trade-off.</b> Lithium-ion costs AED 470 − AED 380 = AED 90 more.</p>
+  <div class="warn"><b>Common mistake:</b> picking the cheapest or "best looking" option before checking the limits. An option that breaks a limit can never be chosen, however good its other numbers are.</div>
+  <h4>"Compare" needs both sides</h4>
+  <p>When asked to compare two options, give <b>one advantage of each</b>, with numbers. For example: "Lithium-ion lasts longer (1000 cycles against 600), but NiMH is cheaper (AED 380 against AED 470)."</p>
+  <h4>If the limits change ("refine")</h4>
+  <p>Go back to step 1 and do it all again with the new limit. Then say what is lost compared with before, using numbers.</p>`,
+ ex:{q:`${C1_STORY}Justify which pack the farm should select.`,
+  steps:[`<b>Claim:</b> the farm should select the lithium-ion pack.`,`<b>Check both limits:</b> 0.90 kg is no more than 2.00 kg ✓ and AED 470 is no more than AED 500 ✓. (Lead–acid fails: 2.30 kg is over 2.00 kg.)`,`<b>Evidence, top priority:</b> it has the longest cycle life of the eligible packs, 1000 cycles against 600 for NiMH.`,`<b>Evidence, second priority:</b> it is also lighter, 0.90 kg against 1.60 kg.`,`<b>Trade-off:</b> it costs AED 90 more than NiMH (470 − 380). The farm accepts this to gain 400 extra charge cycles (1000 − 600).`,`Count the data points: 1000, 600, 0.90, 1.60, 470, 380. The question asked for at least three, so this is plenty.`]},
+ checks:[{q:`${BATT_C1}Limits: mass no more than 2.00 kg, cost no more than AED 500. Which pack does not meet the limits?`,options:['Lithium-ion','Nickel–metal hydride','Lead–acid','They all meet the limits'],a:2,why:'Lead–acid is 2.30 kg, which is greater than the 2.00 kg maximum. Its cost (AED 260) is fine, but one failed limit is enough to rule it out.'},
+         {q:`The budget is cut to AED 450. Which pack is selected now?`,options:['Lithium-ion','Nickel–metal hydride','Lead–acid','None of them'],a:1,why:'Lithium-ion costs AED 470, which is now over the limit. Lead–acid is still too heavy. NiMH passes both (AED 380, 1.60 kg). The farm gives up 400 cycles (1000 → 600) and the pack is 0.70 kg heavier.'}]},
+
+{t:'Corrosion and protecting steel', html:`
+  <h4>What is corrosion?</h4>
+  <p><b>Corrosion</b> is the slow damage of a metal as it reacts with its surroundings. Rusting is the corrosion of iron. <b>Steel</b> is mostly iron, so steel rusts too.</p>
+  <p>Corrosion is a redox reaction. The iron is <b>oxidized</b>: ${c('Fe → Fe²⁺ + 2e⁻')}. The metal atoms turn into ions and the solid metal is eaten away.</p>
+  <div class="rule">Iron needs <b>oxygen</b> and <b>water</b> to rust. <b>Salt</b> makes it faster. That is why ships and cars near the sea rust quickly.</div>
+  <h4>Three ways to protect steel</h4>
+  <ul class="words">
+   <li><b>Barrier methods</b> (paint, epoxy, plastic): cover the steel so oxygen and water cannot reach it. <b>Weakness:</b> if the barrier is scratched or worn, the steel underneath is exposed and rusts.</li>
+   <li><b>Galvanizing:</b> coat the steel with <b>zinc</b>. Zinc is more reactive than iron, so the zinc is oxidized first. This works <b>even where the coating is scratched</b>.</li>
+   <li><b>Sacrificial anode:</b> connect a block of a more reactive metal (Mg, Zn or Al) to the steel. That block is oxidized <b>instead of</b> the steel. It is slowly used up, so it has to be <b>replaced</b>.</li>
+  </ul>
+  <div class="plain"><b>Why "sacrificial"?</b> The block sacrifices itself. It becomes the anode (AN OX) and gets eaten away, and the steel becomes the cathode and stays safe.</div>
+  <h4>The rule for which metals protect iron</h4>
+  <div class="graphs">${fig(ladderSVG(),'Metals to the left of iron have a more negative E°, so they are oxidized instead of the iron.','wide')}</div>
+  <div class="rule">Only a metal that is <b>more reactive than iron</b> (more negative E° than −0.44 V) protects it.</div>
+  <div class="warn"><b>Warning:</b> if iron touches a <b>less</b> reactive metal, like copper or tin, the <b>iron</b> becomes the anode. It corrodes <b>faster</b> than it would on its own.</div>
+  <h4>The evidence</h4>
+  <p>Iron nails in salt water for 14 days, each touching a different metal. The bars show how much iron was lost.</p>
+  ${barsHTML()}
+  <p>With magnesium or zinc the nail lost far less than the bare nail (0.42 g). With tin or copper it lost <b>more</b>.</p>
+  <h4>What happens to the electrons?</h4>
+  <p>With zinc attached: ${c('Zn → Zn²⁺ + 2e⁻')}. The electrons flow to the iron. The iron is now the cathode, where oxygen is reduced (${c('O₂ + 2H₂O + 4e⁻ → 4OH⁻')}). The iron itself is not oxidized.</p>
+  <p>With copper attached: ${c('Fe → Fe²⁺ + 2e⁻')}. The iron is the anode and the copper is the cathode, so the iron is eaten away.</p>`,
+ ex:{q:`Calculate E°cell for the Zn–Fe pair (zinc as anode) and for the Fe–Cu pair (iron as anode). Zn: −0.76 V, Fe: −0.44 V, Cu: +0.34 V. What do the values tell you?`,
+  steps:[`Formula: ${c('E°cell = E°cathode − E°anode')}.`,`Zn–Fe, zinc is the anode and iron is the cathode: ${c('E°cell = (−0.44) − (−0.76) = −0.44 + 0.76 = +0.32 V')}.`,`Fe–Cu, iron is the anode and copper is the cathode: ${c('E°cell = (+0.34) − (−0.44) = 0.34 + 0.44 = +0.78 V')}.`,`Both are positive, so both reactions happen by themselves (spontaneous).`,`But a different metal is the anode each time. In the first, <b>zinc</b> is oxidized and the iron is protected. In the second, <b>iron</b> is oxidized, so it corrodes.`,`Compare: the Fe–Cu value is greater by ${c('0.78 − 0.32 = 0.46 V')}.`]},
+ checks:[{q:'Which metal could be attached to a steel hull as a sacrificial anode?',options:['Copper','Gold','Zinc','Silver'],a:2,why:'Zinc is more reactive than iron, so it oxidizes first. Copper, gold and silver are less reactive than iron and would make it corrode faster.'},
+         {q:'A painted steel gate and a galvanized steel gate both get a deep scratch. What happens?',options:['Both rust at the scratch','Neither rusts','The painted gate rusts at the scratch; the galvanized one is still protected','The galvanized gate rusts at the scratch; the painted one is still protected'],a:2,why:'Paint is only a barrier, so a scratch exposes the steel. Zinc is more reactive than iron, so it keeps being oxidized first, even next to a scratch.'}]},
+
+{t:'Writing answers: CER, command terms and limitations', html:`
+  <p>The top levels (5 to 8) are about <b>how you write</b>. You can know all the chemistry and still lose marks by not giving the answer in the shape the question asks for.</p>
+  <h4>Claim, Evidence, Reasoning (CER)</h4>
+  <div class="rule"><b>Claim:</b> one sentence that answers the question.<br><b>Evidence:</b> at least <b>two</b> relevant numbers from the data, <b>with units</b>.<br><b>Reasoning:</b> the chemistry that explains <b>why</b> the evidence supports the claim (electron transfer, reactivity, trade-offs).</div>
+  <div class="plain"><b>How to tell them apart</b><br>A <b>claim</b> is a decision or a yes/no. No numbers needed.<br><b>Evidence</b> is something you could point to in the table.<br><b>Reasoning</b> usually has "because" or "so" in it, and uses science words.</div>
+  <p>For the hardest questions (levels 5 to 8) also: <b>check every limit</b>, say which option meets them, and <b>name the trade-off</b>.</p>
+  <h4>Command terms</h4>
+  <p>The first word of the question tells you what kind of answer to give.</p>
+  <table><tr><th>Command term</th><th>What to do</th></tr>
+  <tr><td>Identify</td><td>Name or select the correct answer.</td></tr>
+  <tr><td>Determine</td><td>Work out an answer from the information given.</td></tr>
+  <tr><td>Classify</td><td>Place into a category (such as oxidation or reduction).</td></tr>
+  <tr><td>Calculate</td><td>Show formula, substitution and final answer with units.</td></tr>
+  <tr><td>Predict</td><td>State what will happen and use evidence to support it.</td></tr>
+  <tr><td>Explain</td><td>Give reasons, using scientific ideas.</td></tr>
+  <tr><td>Compare</td><td>Describe similarities and differences, using data.</td></tr>
+  <tr><td>Analyze</td><td>Break data into parts to show patterns or relationships.</td></tr>
+  <tr><td>Justify</td><td>Give valid reasons and evidence for a choice.</td></tr>
+  <tr><td>Evaluate</td><td>Judge strengths and limitations and reach a supported conclusion.</td></tr></table>
+  <div class="warn"><b>Identify</b> needs only the answer. <b>Explain</b>, <b>Justify</b> and <b>Evaluate</b> need reasons. If you only write the answer for those, you cannot get full marks.</div>
+  <h4>"Evaluate a claim"</h4>
+  <p>Say clearly whether the claim is <b>supported</b> or <b>not supported</b>, then prove it with data from <b>both sides</b>: the cases that fit the claim and the cases that do not.</p>
+  <h4>Limitations of an experiment</h4>
+  <p>A <b>limitation</b> is a reason the experiment might not tell you the whole truth. For a short lab test, think about:</p>
+  <ul class="words">
+   <li><b>Time:</b> a 14-day test cannot show what happens over 5 years.</li>
+   <li><b>Scale:</b> small strips in a beaker are not the same as a big pipe.</li>
+   <li><b>Conditions:</b> real life has flowing water, temperature changes and so on.</li>
+  </ul>
+  <h4>A hard choice: magnesium or zinc for 5 years?</h4>
+  <p>Magnesium protects slightly better (0.01 g of iron lost against 0.03 g). But magnesium is much more reactive, so it gets <b>used up faster</b>. If it cannot be replaced for 5 years, it might run out and leave the iron unprotected. Zinc is still more reactive than iron, so it still protects, and it lasts longer. So: <b>zinc</b>. The trade-off is slightly more iron lost.</p>
+  <div class="tipbox"><b>Exam tip from the guide:</b> read the limits first, cross out any option that fails one, and only then compare what is left using the priority order you are given.</div>`,
+ ex:{q:`${D1_STORY}The technician claims: "Connecting iron to any other metal will protect it from corrosion." Evaluate the claim.`,
+  steps:[`<b>Claim:</b> the technician's claim is not supported.`,`<b>Evidence that some metals protect:</b> with magnesium the nail lost 0.01 g and with zinc 0.03 g, compared with 0.42 g for the bare nail.`,`<b>Evidence that some metals make it worse:</b> with tin the nail lost 0.61 g and with copper 0.95 g. Both are <i>more</i> than the bare nail. Copper is more than double (0.95 ÷ 0.42 ≈ 2.3 times).`,`<b>Reasoning for Mg and Zn:</b> Mg (−2.37 V) and Zn (−0.76 V) have more negative reduction potentials than iron (−0.44 V), so they are oxidized instead of the iron.`,`<b>Reasoning for Sn and Cu:</b> Sn (−0.14 V) and Cu (+0.34 V) have less negative potentials than iron, so the iron becomes the anode and is oxidized.`,`<b>Conclusion:</b> only metals that are more reactive than iron protect it.`]},
+ checks:[{q:'"The nail with copper lost 0.95 g, but the bare nail lost only 0.42 g." Which part of a CER answer is this?',options:['Claim','Evidence','Reasoning'],a:1,why:'It quotes numbers from the data, with units. That is evidence. It does not yet explain why.'},
+         {q:'Which is a limitation of using the 14-day nail experiment to choose a metal that must last 5 years?',options:['The nails were made of iron','It cannot show how quickly the protective metal is used up over 5 years','Salt water was used','The masses were measured in grams'],a:1,why:'The test is far too short, and uses small strips. It cannot show how long each anode would last, and it does not copy real conditions like flowing water or temperature changes.'}]}
+];
+
+// ---------- REVIEW SHEET: the practice questions from the study guide ----------
+const A='Part A: Level 1–2', B='Part B: Level 3–4', C='Part C: Level 5–6', D='Part D: Level 7–8';
+const OXRED=['Oxidation','Reduction'];
+const REVIEW=[
+{sec:A,q:'A1. Which reaction is a redox reaction?',parts:[{type:'mc',options:[c('NaCl(aq) + AgNO₃(aq) → AgCl(s) + NaNO₃(aq)'),c('2Na(s) + Cl₂(g) → 2NaCl(s)'),c('HCl(aq) + NaOH(aq) → NaCl(aq) + H₂O(l)'),c('CaCO₃(s) → CaO(s) + CO₂(g)')],a:1}],steps:['A redox reaction is one where oxidation numbers change, because electrons move.',`In ${c('2Na + Cl₂ → 2NaCl')}, Na and ${c('Cl₂')} are plain elements at the start, so both are 0.`,`In NaCl they are ${c('Na⁺')} (+1) and ${c('Cl⁻')} (−1). Na went 0 → +1 and Cl went 0 → −1, so electrons were transferred.`,'In the other three, every element keeps the same oxidation number. The ions only swap partners or split apart.']},
+{sec:A,q:'A2. When a species is reduced, its oxidation number …',parts:[{type:'mc',options:['increases','decreases','stays the same','always becomes zero'],a:1}],steps:['OIL RIG: Reduction Is Gain of electrons.','Electrons are negative, so gaining them makes the oxidation number go <b>down</b>.']},
+{sec:A,q:`A3. In the reaction ${c('Mg + Cl₂ → MgCl₂')}, which substance is the oxidizing agent?`,parts:[{type:'mc',options:['Mg',c('Cl₂'),c('MgCl₂'),c('Cl⁻')],a:1}],steps:['The oxidizing agent is the substance that is <b>reduced</b> (it takes the electrons).',`${c('Cl₂')} goes from 0 to −1. It gains electrons, so it is reduced.`,`So ${c('Cl₂')} is the oxidizing agent. (Mg is oxidized, so Mg is the reducing agent.)`,'An agent is always a reactant, so it cannot be a product like MgCl₂ or Cl⁻.']},
+{sec:A,q:`A4. Determine the oxidation number of iron in ${c('Fe₂O₃')}. Use −2 for oxygen.`,parts:[{type:'mc',options:['+2','+3','+6','−3'],a:1}],steps:['2 iron atoms, 3 oxygen atoms, and the compound is neutral, so the total is 0.',`${c('2x + 3(−2) = 0')}`,`${c('2x − 6 = 0')}, so ${c('2x = +6')}.`,`Divide by 2: ${c('x = +3')}.`]},
+{sec:A,q:`A5. Determine the oxidation number of chromium in ${c('Cr₂O₇²⁻')}. Use −2 for oxygen.`,parts:[{type:'mc',options:['+3','+7','+6','+12'],a:2}],steps:['2 chromium atoms, 7 oxygen atoms. It is an ion with charge −2, so the total is −2, not 0.',`${c('2x + 7(−2) = −2')}`,`${c('2x − 14 = −2')}, so ${c('2x = +12')}.`,`Divide by 2: ${c('x = +6')}. (+12 is the total for both chromium atoms.)`]},
+{sec:A,q:`A6. Identify the oxidation number of chlorine in ${c('Cl₂(g)')}.`,parts:[{type:'mc',options:['−1','+1','+2','0'],a:3}],steps:[`${c('Cl₂')} is chlorine on its own, not in a compound.`,'Rule 1: an element in its elemental form is <b>0</b>.']},
+{sec:A,q:'A7. In a voltaic cell, the anode is the electrode where …',parts:[{type:'mc',options:['reduction occurs','oxidation occurs','electrons are made from nothing','the salt bridge is attached'],a:1}],steps:['AN OX: <b>An</b>ode = <b>Ox</b>idation.','(RED CAT: reduction happens at the cathode.)']},
+{sec:A,q:'A8. In the external wire of a voltaic cell, electrons flow …',parts:[{type:'mc',options:['from cathode to anode','from anode to cathode','through the salt bridge','in both directions at once'],a:1}],steps:['Oxidation at the anode releases electrons.','They travel through the wire to the cathode, where reduction uses them.','The salt bridge carries ions, not electrons.']},
+{sec:A,q:'A9. A primary battery is one that …',parts:[{type:'mc',options:['is designed to be recharged many times','is not normally rechargeable','always has the highest efficiency','contains only lead'],a:1}],steps:['Primary batteries are not normally rechargeable.','Secondary batteries are the rechargeable ones (they get a "second" life).']},
+{sec:A,q:'A10. Which metal could be attached to a steel hull as a sacrificial anode?',parts:[{type:'mc',options:['Copper','Gold','Zinc','Silver'],a:2}],steps:['A sacrificial anode has to be <b>more reactive than iron</b>, so that it is oxidized instead of the steel.','Zinc is more reactive than iron.','Copper, gold and silver are less reactive than iron. They would not protect it (they would make it corrode faster).']},
+{sec:B,q:'B1. Classify each half-reaction as oxidation or reduction.',parts:[{type:'mc',label:'i. '+c('Cu → Cu²⁺ + 2e⁻'),options:OXRED,a:0},{type:'mc',label:'ii. '+c('Cl₂ + 2e⁻ → 2Cl⁻'),options:OXRED,a:1},{type:'mc',label:'iii. '+c('Sn⁴⁺ + 2e⁻ → Sn²⁺'),options:OXRED,a:1},{type:'mc',label:'iv. '+c('2I⁻ → I₂ + 2e⁻'),options:OXRED,a:0},{type:'mc',label:'v. '+c('MnO₄⁻ + 8H⁺ + 5e⁻ → Mn²⁺ + 4H₂O'),options:OXRED,a:1}],steps:['Find the electrons. On the <b>right</b> = lost = oxidation. On the <b>left</b> = gained = reduction.','i. Electrons on the right: <b>oxidation</b> (Cu 0 → +2).','ii. Electrons on the left: <b>reduction</b> (Cl 0 → −1).','iii. Electrons on the left: <b>reduction</b> (Sn +4 → +2).','iv. Electrons on the right: <b>oxidation</b> (I −1 → 0).','v. Electrons on the left: <b>reduction</b> (Mn +7 → +2).']},
+{sec:B,q:`B2a. A zinc strip is placed in copper(II) sulfate solution: ${c('Zn(s) + CuSO₄(aq) → ZnSO₄(aq) + Cu(s)')}. Complete the oxidation-number table.`,parts:[{type:'num',label:'Zn in the reactants',a:'0'},{type:'num',label:'Zn in the products',a:'2'},{type:'num',label:'Cu in the reactants',a:'2'},{type:'num',label:'Cu in the products',a:'0'},{type:'num',label:'S (the same on both sides)',a:'6'},{type:'num',label:'O (the same on both sides)',a:'-2'}],steps:['Zn(s) on the left is a plain element: <b>0</b>.',`In ${c('ZnSO₄')} the sulfate ion is ${c('SO₄²⁻')}, so zinc must be ${c('Zn²⁺')}: <b>+2</b>.`,`In ${c('CuSO₄')} copper is ${c('Cu²⁺')}: <b>+2</b>. (The name copper(II) tells you this too.)`,'Cu(s) on the right is a plain element: <b>0</b>.','Oxygen in a compound is <b>−2</b>.',`Sulfur in ${c('SO₄²⁻')}: ${c('x + 4(−2) = −2')}, so ${c('x = +6')}. It is <b>+6</b> on both sides.`]},
+{sec:B,q:`B2b to B2e. Still using ${c('Zn(s) + CuSO₄(aq) → ZnSO₄(aq) + Cu(s)')}.`,parts:[{type:'mc',label:'b. Zinc is',options:['oxidized','reduced'],a:0},{type:'mc',label:'c. Copper(II) ions are',options:['oxidized','reduced'],a:1},{type:'mc',label:'d. The spectator ion is',options:[c('Zn²⁺'),c('Cu²⁺'),c('SO₄²⁻')],a:2},{type:'mc',label:'e. The oxidizing agent is',options:['Zn',c('Cu²⁺ (in CuSO₄)'),c('SO₄²⁻')],a:1},{type:'mc',label:'e. The reducing agent is',options:['Zn',c('Cu²⁺ (in CuSO₄)'),c('SO₄²⁻')],a:0}],steps:['b. Zinc is <b>oxidized</b>: its oxidation number increases from 0 to +2.','c. Copper(II) ions are <b>reduced</b>: their oxidation number decreases from +2 to 0.',`d. The spectator ion is <b>sulfate, ${c('SO₄²⁻')}</b>. It is unchanged on both sides (S stays +6, O stays −2).`,`e. Oxidizing agent: ${c('Cu²⁺')}, because it accepts electrons and is reduced.`,'e. Reducing agent: Zn, because it donates electrons and is oxidized.']},
+{sec:B,q:'B2f. Write the oxidation half-reaction for zinc.',parts:[{type:'mc',options:[c('Zn + 2e⁻ → Zn²⁺'),c('Zn → Zn²⁺ + 2e⁻'),c('Zn²⁺ + 2e⁻ → Zn'),c('Zn → Zn⁺ + e⁻')],a:1}],steps:['Oxidation means electrons are lost, so they go on the <b>right</b>.',`Zinc becomes ${c('Zn²⁺')}, so it loses 2 electrons: ${c('Zn → Zn²⁺ + 2e⁻')}.`,'Check the charge: left is 0, right is (+2) + (−2) = 0. Balanced.','<b>What to write for "explain":</b> "The oxidation number of zinc increases from 0 to +2, which means it has lost 2 electrons. Loss of electrons is oxidation."']},
+{sec:B,q:`B2g. Magnesium ribbon reacts with hydrochloric acid: ${c('Mg(s) + 2HCl(aq) → MgCl₂(aq) + H₂(g)')}.`,parts:[{type:'mc',label:'Magnesium',options:['loses electrons','gains electrons'],a:0},{type:'mc',label:'Its half-reaction is',options:[c('Mg + 2e⁻ → Mg²⁺'),c('Mg²⁺ + 2e⁻ → Mg'),c('Mg → Mg²⁺ + 2e⁻')],a:2},{type:'num',label:'The oxidation number of Mg in the products is',a:'2'},{type:'mc',label:'Bonus: the spectator ion is',options:[c('H⁺'),c('Cl⁻'),c('Mg²⁺')],a:1}],steps:['Mg(s) is a plain element: 0.',`In ${c('MgCl₂')} it is ${c('Mg²⁺')}: +2.`,`0 → +2 is an increase, so magnesium <b>loses</b> 2 electrons: ${c('Mg → Mg²⁺ + 2e⁻')}.`,'<b>What to write:</b> "Its oxidation number increases from 0 to +2, which shows loss of 2 electrons, so it is oxidized."',`Hydrogen goes +1 → 0, so ${c('H⁺')} is reduced. ${c('Cl⁻')} stays −1, so it is the spectator ion.`]},
+{sec:B,q:`B3a and B3b. A student builds a Zn–Cu voltaic cell: a zinc electrode in ${c('ZnSO₄(aq)')} and a copper electrode in ${c('CuSO₄(aq)')}, joined by a salt bridge and an external wire.${ETABLE_B3}`,parts:[{type:'mc',label:'a. The anode is',options:['zinc','copper'],a:0},{type:'mc',label:'a. In the wire, electrons flow',options:['from the Zn electrode to the Cu electrode','from the Cu electrode to the Zn electrode'],a:0},{type:'mc',label:'b. The metal most easily oxidized is',options:['Zn','Cu','Mg','Ag'],a:2}],steps:['a. Zinc (−0.76 V) has a more negative E° than copper (+0.34 V), so zinc is oxidized. <b>Anode: zinc. Cathode: copper.</b>','a. Electrons flow through the wire from anode to cathode: <b>from Zn to Cu</b>.','b. <b>Magnesium</b>. It has the most negative reduction potential (−2.37 V).','<b>What to write for "explain":</b> "Its ions are the least likely to gain electrons, so the metal most readily loses them."']},
+{sec:B,q:`B3c and B3d. Use E°cell = E°cathode − E°anode.${ETABLE_B3}`,parts:[{type:'num',label:'c. E°cell of the Zn–Cu cell, in V (type just the number)',a:'1.10'},{type:'num',label:'d. E°cell of a Mg–Ag cell, in V',a:'3.17'},{type:'mc',label:'d. The greater cell potential belongs to',options:['the Zn–Cu cell','the Mg–Ag cell'],a:1},{type:'num',label:'d. It is greater by how many volts?',a:'2.07'}],steps:[`c. Zn is the anode, Cu the cathode: ${c('E°cell = (+0.34 V) − (−0.76 V) = +1.10 V')}.`,`d. Mg is the anode (more negative), Ag the cathode: ${c('E°cell = (+0.80 V) − (−2.37 V) = +3.17 V')}.`,'Do not double the silver value, even though its half-reaction has only one electron.',`d. Mg–Ag is greater, by ${c('3.17 − 1.10 = 2.07 V')}.`]},
+{sec:B,q:'B3e. Explain the job of the salt bridge.',parts:[{type:'mc',options:['It lets electrons flow from the anode to the cathode','It lets ions move between the half-cells, keeping each solution neutral and completing the circuit','It stops the two metals from reacting','It supplies the energy for the reaction'],a:1}],steps:['Electrons travel in the wire, not the salt bridge.','<b>What to write:</b> "The salt bridge lets ions move between the two half-cells. This keeps each solution electrically neutral and completes the circuit, so electrons can keep flowing."']},
+{sec:B,q:`B4a. Each battery starts with 200 Wh of stored chemical energy.${BATT_B4}Calculate the efficiency of the zinc–carbon and lithium-polymer batteries.`,parts:[{type:'num',label:'Zinc–carbon efficiency, in %',a:'50'},{type:'num',label:'Lithium-polymer efficiency, in %',a:'92'}],steps:[`Formula: ${c('Efficiency (%) = (useful ÷ stored) × 100')}.`,`Zinc–carbon: ${c('(100 ÷ 200) × 100 = 50%')}.`,`Lithium-polymer: ${c('(184 ÷ 200) × 100 = 92%')}.`,'In the exam write all three things: the formula, the substitution, and the answer with the % sign.']},
+{sec:B,q:'B4b. A different battery delivers 135 Wh of useful electrical energy and has an efficiency of 90%. Determine how much chemical energy it stored.',parts:[{type:'num',label:'Stored chemical energy, in Wh',a:'150'}],steps:[`Start from ${c('Efficiency = (useful ÷ stored) × 100')}.`,`Rearrange: ${c('stored = useful ÷ efficiency')}, with the efficiency as a decimal.`,`90% = 0.90, so ${c('stored = 135 ÷ 0.90 = 150 Wh')}.`,'Check: stored (150) is bigger than useful (135). Good.']},
+{sec:C,q:`C1a and C1b. ${C1_STORY}`,parts:[{type:'mc',label:'a. Which pack does not meet the limits?',options:['Lithium-ion','Nickel–metal hydride','Lead–acid'],a:2},{type:'mc',label:'a. Which limit does it break?',options:['mass','cost'],a:0},{type:'mc',label:'b. Of the two remaining packs, which has the better cycle life?',options:['Lithium-ion','Nickel–metal hydride'],a:0},{type:'mc',label:'b. Which of the two is cheaper?',options:['Lithium-ion','Nickel–metal hydride'],a:1}],steps:['a. <b>Lead–acid</b> does not meet the mass limit: 2.30 kg is greater than the 2.00 kg maximum. (Its cost of AED 260 is fine, but it is still excluded.)','b. Cycle life: lithium-ion lasts 1000 cycles against 600 for NiMH, so lithium-ion is better.','b. Cost: NiMH costs AED 380 against AED 470 for lithium-ion, so NiMH is cheaper.','"Compare" means one advantage of <b>each</b>, with numbers. (Mass would also work: 0.90 kg against 1.60 kg.)']},
+{sec:C,q:`C1c. ${C1_STORY}Justify which pack the farm should select.`,parts:[{type:'mc',label:'The farm should select',options:['Lithium-ion','Nickel–metal hydride','Lead–acid'],a:0},{type:'num',label:'Trade-off: how many AED more does it cost than the other eligible pack?',a:'90'},{type:'num',label:'How many extra charge cycles does the farm gain?',a:'400'}],steps:['<b>Claim:</b> the farm should select the lithium-ion pack.','<b>Evidence:</b> it has the longest cycle life of the eligible packs (1000 against 600 cycles), which is the top priority, and it is also lighter (0.90 kg against 1.60 kg).','<b>Limits:</b> 0.90 kg ≤ 2.00 kg ✓ and AED 470 ≤ AED 500 ✓.','<b>Trade-off:</b> the farm pays AED 90 more than for NiMH (470 − 380) to gain 400 extra cycles (1000 − 600).']},
+{sec:C,q:`C1d. ${C1_STORY}Refine your decision: the farm's budget is cut to <b>AED 450</b>.`,parts:[{type:'mc',label:'Which pack is selected now?',options:['Lithium-ion','Nickel–metal hydride','Lead–acid'],a:1},{type:'num',label:'How many charge cycles does the farm give up compared with part c?',a:'400'},{type:'num',label:'How many kg heavier is the new pack?',a:'0.70'}],steps:['Start again with the limits. Lithium-ion costs AED 470, which is over AED 450, so it is no longer eligible.','Lead–acid is still too heavy (2.30 kg).','<b>NiMH is now selected</b>: AED 380 ≤ 450 ✓ and 1.60 kg ≤ 2.00 kg ✓.','The farm gives up <b>400 charge cycles</b> (1000 → 600).','It also accepts a pack that is <b>0.70 kg heavier</b> (0.90 → 1.60 kg).']},
+{sec:D,q:`D1a. ${D1_STORY}The technician claims: "Connecting iron to any other metal will protect it from corrosion." Evaluate the claim.`,parts:[{type:'mc',label:'The claim is',options:['supported by the data','not supported by the data'],a:1},{type:'multi',label:'Tick every metal that protected the iron (less mass lost than the bare nail)',options:['Magnesium','Zinc','Tin','Copper'],a:[0,1]},{type:'mc',label:'The metals that protect iron have a reduction potential that is',options:['more negative than iron (−0.44 V)','less negative than iron (−0.44 V)'],a:0}],steps:['<b>Claim:</b> the technician\'s claim is not supported.','<b>Evidence:</b> magnesium (0.01 g lost) and zinc (0.03 g lost) protect the iron compared with the bare nail (0.42 g lost).','<b>Evidence:</b> tin (0.61 g) and copper (0.95 g) make the iron lose <i>more</i> mass than the bare nail. Copper is more than double (0.95 ÷ 0.42 ≈ 2.3 times).','<b>Reasoning:</b> Mg (−2.37 V) and Zn (−0.76 V) have more negative reduction potentials than iron (−0.44 V), so they are oxidized instead of iron.','<b>Reasoning:</b> Sn (−0.14 V) and Cu (+0.34 V) have less negative potentials than iron, so iron is the metal that is oxidized.','<b>Conclusion:</b> only metals more reactive than iron protect it.']},
+{sec:D,q:`D1b. ${D1_R2}Explain why the iron lost very little mass with zinc but more mass with copper. Calculate E°cell for the Zn–Fe pair (zinc as anode) and the Fe–Cu pair (iron as anode).`,parts:[{type:'mc',label:'With zinc attached, the metal that is oxidized is',options:['zinc','iron'],a:0},{type:'mc',label:'With copper attached, the metal that is oxidized is',options:['copper','iron'],a:1},{type:'num',label:'E°cell for Zn–Fe, in V',a:'0.32'},{type:'num',label:'E°cell for Fe–Cu, in V',a:'0.78'},{type:'num',label:'The Fe–Cu value is greater by how many volts?',a:'0.46'}],steps:[`<b>With zinc:</b> Zn is the anode: ${c('Zn → Zn²⁺ + 2e⁻')}. Electrons flow to the iron, which is the cathode, where oxygen is reduced (${c('O₂ + 2H₂O + 4e⁻ → 4OH⁻')}). So iron is not oxidized.`,`<b>With copper:</b> iron is the anode: ${c('Fe → Fe²⁺ + 2e⁻')}, and copper is the cathode, so the iron corrodes faster.`,`Zn–Fe: ${c('E°cell = (−0.44) − (−0.76) = +0.32 V')}.`,`Fe–Cu: ${c('E°cell = (+0.34) − (−0.44) = +0.78 V')}.`,'Both are positive, so both reactions are spontaneous, but they run in different directions: in the first the zinc is oxidized, in the second the iron is oxidized.',`The Fe–Cu value is ${c('0.78 − 0.32 = 0.46 V')} greater.`]},
+{sec:D,q:`D1c. ${D1_R2}A steel water pipe must be joined to a copper fitting. Predict what happens to the steel at the joint, then justify a design change that uses one of the metals in the table.`,parts:[{type:'mc',label:'Prediction: at the joint the steel',options:['is protected by the copper','becomes the anode and corrodes faster than it would alone','is not affected','becomes the cathode'],a:1},{type:'mc',label:'Design change: connect a block of … to the steel near the joint',options:['tin','more copper','zinc'],a:2}],steps:[`<b>Prediction:</b> iron (steel) is more reactive than copper, so at the joint the steel becomes the anode and is oxidized (${c('Fe → Fe²⁺ + 2e⁻')}) while the copper fitting is the cathode.`,'The steel will corrode faster than it would alone. Evidence: 0.95 g lost with copper against 0.42 g for the bare nail.','<b>Design:</b> connect a zinc block electrically to the steel near the joint.',`<b>Justify:</b> zinc (−0.76 V) is more reactive than iron (−0.44 V), so it is oxidized instead (${c('Zn → Zn²⁺ + 2e⁻')}) and protects the steel.`,'Tin (−0.14 V) is less reactive than iron, so it would make things worse. (Magnesium would also protect; an insulating gasket between the steel and copper is another valid idea, but the question asks for one of the metals.)']},
+{sec:D,q:`D1d. ${D1_STORY}Refine your design: the protective metal cannot be replaced for 5 years, and only magnesium or zinc is available.`,parts:[{type:'mc',label:'Which should be used?',options:['Magnesium','Zinc'],a:1},{type:'num',label:'E°cell for the Mg–Fe pair (Mg as anode), in V',a:'1.93'},{type:'mc',label:'The trade-off accepted is',options:['the iron loses a little more mass (0.03 g against 0.01 g in the test)','the zinc costs more','zinc does not protect iron at all'],a:0},{type:'mc',label:'One limitation of the 14-day experiment is',options:['iron nails were used','it cannot show how quickly each anode is used up over 5 years','it used salt water','the masses were too small to measure'],a:1}],steps:['<b>Choice: zinc.</b>',`Compare the driving force for each protective metal to be oxidized: Mg–Fe ${c('E°cell = (−0.44) − (−2.37) = +1.93 V')}, while Zn–Fe is +0.32 V.`,'Mg protects slightly better in the test (0.01 g against 0.03 g lost), but its greater reactivity means it is used up faster. That matters when it cannot be replaced for 5 years.','Zinc is still more reactive than iron, so it still protects, and it should last longer.','<b>Trade-off:</b> the iron loses a little more mass (0.03 g against 0.01 g in the test) and has a smaller protection margin.','<b>Limitation:</b> the 14-day test with small strips cannot show how quickly each anode is consumed over 5 years. It also does not copy real conditions such as water flow, temperature changes or the size of the anode compared with the steel. Longer or scaled-up testing would be needed.']}
+];
+
+// ---------- RANDOM QUESTIONS (used by Extra practice and by the Test) ----------
+// Every generator works out its answer and then re-checks it a second way (the "ok" value),
+// so a question is only ever shown if its answer is really correct.
+const E0={Mg:-237,Al:-166,Zn:-76,Fe:-44,Ni:-26,Sn:-14,Pb:-13,Cu:34,Ag:80};   // reduction potentials in hundredths of a volt
+const NAME={Mg:'magnesium',Al:'aluminium',Zn:'zinc',Fe:'iron',Ni:'nickel',Sn:'tin',Pb:'lead',Cu:'copper',Ag:'silver'};
+const ION={Mg:'Mg²⁺',Al:'Al³⁺',Zn:'Zn²⁺',Fe:'Fe²⁺',Ni:'Ni²⁺',Sn:'Sn²⁺',Pb:'Pb²⁺',Cu:'Cu²⁺',Ag:'Ag⁺'};
+const NE={Mg:2,Al:3,Zn:2,Fe:2,Ni:2,Sn:2,Pb:2,Cu:2,Ag:1};
+const METALS=Object.keys(E0);
+const cap=s=>s[0].toUpperCase()+s.slice(1);
+const salt=k=>NAME[k]+(['Cu','Fe','Ni'].includes(k)?'(II)':'');   // copper(II), iron(II), nickel(II); the others need no number
+const volt=h=>(h<0?'−':'+')+(Math.abs(h)/100).toFixed(2);
+const en=n=>(n===1?'':n)+'e⁻';
+const eTable=ms=>'<table><tr><th>Reduction half-reaction</th><th>E° (V)</th></tr>'+ms.map(k=>'<tr><td>'+ION[k]+' + '+en(NE[k])+' → '+k+'</td><td>'+volt(E0[k])+'</td></tr>').join('')+'</table>';
+const on=n=>n===0?'0':(n<0?'−':'+')+Math.abs(n);
+// two metals whose E° values are clearly different; returns [more negative, less negative]
+function pair(list){ for(;;){ const p=shuffle(list||METALS).slice(0,2).sort((a,b)=>E0[a]-E0[b]); if(E0[p[1]]-E0[p[0]]>=10) return p; } }
+// a ready-made question with one right answer; o[0] is the right answer unless "fixed" keeps the order and "a" marks it
+function bank(items){ const it=pick(items), right=it.o[it.a||0], opts=it.fixed?it.o.slice():shuffle(it.o);
+  return {ok:opts.filter(x=>x===right).length===1, q:it.q, parts:[{type:'mc',options:opts,a:opts.indexOf(right)}], steps:it.why}; }
+// three battery packs where exactly one breaks a limit
+function packs(){ const names=shuffle(['Lithium-ion','Nickel–metal hydride','Lead–acid','Lithium-polymer','Nickel–cadmium']).slice(0,3);
+  const M=pick([15,20,25]), C=pick([400,500,600]), bad=ri(0,2), which=pick(['mass','cost']); const cyc=shuffle([300,400,500,600,700,800,900,1000,1200]).slice(0,3);
+  const rows=names.map((n,i)=>({n, mass: (i===bad&&which==='mass') ? M+ri(1,6) : M-ri(2,10), cost: (i===bad&&which==='cost') ? C+10*ri(1,9) : C-10*ri(2,15), cyc:cyc[i]}));
+  const fails=rows.filter(r=>r.mass>M||r.cost>C); const kg=x=>(x/10).toFixed(2);
+  const table='<table><tr><th>Battery pack</th><th>Mass (kg)</th><th>Cycle life (charge cycles)</th><th>Purchase cost (AED)</th></tr>'+rows.map(r=>'<tr><td>'+r.n+'</td><td>'+kg(r.mass)+'</td><td>'+r.cyc+'</td><td>'+r.cost+'</td></tr>').join('')+'</table>';
+  return {rows,M,C,bad,which,fails,kg,table, intro:'A battery must have a mass of <b>no more than '+kg(M)+' kg</b> and cost <b>no more than AED '+C+'</b>.'}; }
+
+const OXNUM=[ // formula, the element asked for, how many of it, the other atoms [symbol, how many, oxidation number], total charge
+ ['Fe₂O₃','iron',2,[['O',3,-2]],0],['MnO₄⁻','manganese',1,[['O',4,-2]],-1],['Cr₂O₇²⁻','chromium',2,[['O',7,-2]],-2],['SO₄²⁻','sulfur',1,[['O',4,-2]],-2],['NO₃⁻','nitrogen',1,[['O',3,-2]],-1],
+ ['CO₂','carbon',1,[['O',2,-2]],0],['H₂SO₄','sulfur',1,[['H',2,1],['O',4,-2]],0],['KMnO₄','manganese',1,[['K',1,1],['O',4,-2]],0],['SO₂','sulfur',1,[['O',2,-2]],0],['CO₃²⁻','carbon',1,[['O',3,-2]],-2],
+ ['PO₄³⁻','phosphorus',1,[['O',4,-2]],-3],['MnO₂','manganese',1,[['O',2,-2]],0],['Al₂O₃','aluminium',2,[['O',3,-2]],0],['Cu₂O','copper',2,[['O',1,-2]],0],['HNO₃','nitrogen',1,[['H',1,1],['O',3,-2]],0],
+ ['ClO₃⁻','chlorine',1,[['O',3,-2]],-1],['NH₃','nitrogen',1,[['H',3,1]],0],['H₂S','sulfur',1,[['H',2,1]],0],['Na₂SO₄','sulfur',1,[['Na',2,1],['O',4,-2]],0],['SO₃²⁻','sulfur',1,[['O',3,-2]],-2],['CaCO₃','carbon',1,[['Ca',1,2],['O',3,-2]],0],['P₂O₅','phosphorus',2,[['O',5,-2]],0]];
+const CHAINS=[['iron',[['Fe',0],['Fe²⁺',2],['Fe³⁺',3]]],['copper',[['Cu',0],['Cu⁺',1],['Cu²⁺',2]]],['tin',[['Sn',0],['Sn²⁺',2],['Sn⁴⁺',4]]],['chlorine',[['Cl⁻',-1],['Cl₂',0]]],['manganese',[['Mn²⁺',2],['MnO₂',4],['MnO₄⁻',7]]],['sulfur',[['S²⁻',-2],['S',0],['SO₂',4],['SO₄²⁻',6]]],['bromine',[['Br⁻',-1],['Br₂',0]]],['lead',[['Pb',0],['Pb²⁺',2],['PbO₂',4]]]];
+const FIXEDHALF=[['Sn⁴⁺ + 2e⁻ → Sn²⁺','tin goes from +4 to +2'],['Fe²⁺ → Fe³⁺ + e⁻','iron goes from +2 to +3'],['MnO₄⁻ + 8H⁺ + 5e⁻ → Mn²⁺ + 4H₂O','manganese goes from +7 to +2'],['Cr₂O₇²⁻ + 14H⁺ + 6e⁻ → 2Cr³⁺ + 7H₂O','chromium goes from +6 to +3'],['2H⁺ + 2e⁻ → H₂','hydrogen goes from +1 to 0'],['O₂ + 2H₂O + 4e⁻ → 4OH⁻','oxygen goes from 0 to −2'],['Cu⁺ → Cu²⁺ + e⁻','copper goes from +1 to +2'],['Sn²⁺ → Sn⁴⁺ + 2e⁻','tin goes from +2 to +4']];
+const HALFMETAL=[['Na','Na⁺',1],['K','K⁺',1],['Ag','Ag⁺',1],['Mg','Mg²⁺',2],['Zn','Zn²⁺',2],['Cu','Cu²⁺',2],['Fe','Fe²⁺',2],['Ca','Ca²⁺',2],['Ni','Ni²⁺',2],['Al','Al³⁺',3],['Cr','Cr³⁺',3],['Fe','Fe³⁺',3]];
+const HALOGEN=[['Cl₂','Cl⁻','chlorine'],['Br₂','Br⁻','bromine'],['I₂','I⁻','iodine']];
+const ANION=[['SO₄','SO₄²⁻','sulfate',m=>m+'SO₄'],['NO₃','NO₃⁻','nitrate',m=>m+'(NO₃)₂'],['Cl','Cl⁻','chloride',m=>m+'Cl₂']];
+const TWOPLUS=['Mg','Zn','Fe','Ni','Cu'];
+const TERMS=[['Identify','Name or select the correct answer.'],['Determine','Work out an answer from the information given.'],['Classify','Place into a category, such as oxidation or reduction.'],['Calculate','Show formula, substitution and final answer with units.'],['Predict','State what will happen and use evidence to support it.'],['Explain','Give reasons, using scientific ideas.'],['Compare','Describe similarities and differences, using data.'],['Analyze','Break data into parts to show patterns or relationships.'],['Justify','Give valid reasons and evidence for a choice.'],['Evaluate','Judge strengths and limitations and reach a supported conclusion.']];
+const CER3=['Claim','Evidence','Reasoning'];
+
+const GEN={
+ 'Oxidized or reduced?':()=>{ const ch=pick(CHAINS), two=shuffle(ch[1]).slice(0,2), a=two[0], b=two[1], up=b[1]>a[1], n=Math.abs(b[1]-a[1]);
+   return {ok:n>0 && (a[1]+(up?n:-n))===b[1], q:`${c(a[0])} turns into ${c(b[0])}. The oxidation number of ${ch[0]} changes from <b>${on(a[1])}</b> to <b>${on(b[1])}</b>.`,
+    parts:[{type:'mc',label:cap(ch[0])+' is',options:['oxidized','reduced'],a:up?0:1},{type:'mc',label:'Each '+ch[0]+' atom has',options:['lost electrons','gained electrons'],a:up?0:1},{type:'num',label:'How many electrons per '+ch[0]+' atom?',a:''+n}],
+    steps:[`${on(a[1])} to ${on(b[1])}: the number goes <b>${up?'up':'down'}</b>.`, up?'Going up means electrons were <b>lost</b>. Oxidation Is Loss, so it is <b>oxidized</b>.':'Going down means electrons were <b>gained</b>. Reduction Is Gain, so it is <b>reduced</b>.',`The size of the change is the number of electrons: from ${on(a[1])} to ${on(b[1])} is a change of <b>${n}</b>.`]}; },
+ 'Oxidizing and reducing agents':()=>{ const ask=pick(['oxidizing','reducing']);
+   if(ri(0,1)){ const mt=pick([['Mg',1,'Mg',2],['Ca',1,'Ca',2],['Zn',1,'Zn',2],['Na',2,'Na',1],['K',2,'K',1]]), h=pick(HALOGEN), x=h[0].replace('₂','');
+     const prod= mt[3]===2 ? mt[0]+x+'₂' : '2'+mt[0]+x, eq=(mt[1]===2?'2':'')+mt[0]+' + '+h[0]+' → '+prod, opts=shuffle([mt[0],h[0],prod.replace(/^2/,'')]), right=ask==='oxidizing'?h[0]:mt[0];
+     return {ok:opts.indexOf(right)>=0 && mt[3]>0, q:`In the reaction ${c(eq)}, which substance is the <b>${ask} agent</b>?`, parts:[{type:'mc',options:opts.map(c),a:opts.indexOf(right)}],
+      steps:[`${mt[0]} starts as a plain element (0) and ends as ${c(mt[0]+(mt[3]===2?'²⁺':'⁺'))} (${on(mt[3])}). It goes up, so it <b>loses</b> electrons: it is oxidized.`,`${c(h[0])} starts as a plain element (0) and ends as ${c(h[1])} (−1). It goes down, so it <b>gains</b> electrons: it is reduced.`,`The one that is oxidized is the reducing agent: <b>${mt[0]}</b>. The one that is reduced is the oxidizing agent: <b>${c(h[0])}</b>.`,'An agent is always a reactant, never the product.']}; }
+   const p=pair(TWOPLUS), a=p[0], b=p[1], eq=a+' + '+ION[b]+' → '+ION[a]+' + '+b, opts=shuffle([a,ION[b],ION[a],b]), right=ask==='oxidizing'?ION[b]:a;
+   return {ok:E0[a]<E0[b] && opts.indexOf(right)>=0, q:`In the reaction ${c(eq)}, which is the <b>${ask} agent</b>?`, parts:[{type:'mc',options:opts.map(c),a:opts.indexOf(right)}],
+    steps:[`${a} goes from 0 to +2. It goes up, so it loses electrons: it is <b>oxidized</b>.`,`${c(ION[b])} goes from +2 to 0. It goes down, so it gains electrons: it is <b>reduced</b>.`,`The one that is oxidized is the reducing agent: <b>${a}</b>. The one that is reduced is the oxidizing agent: <b>${c(ION[b])}</b>.`,'An agent is always a reactant (left of the arrow).']}; },
+ 'Oxidation number in a compound':()=>{ const d=pick(OXNUM), f=d[0], n=d[2], rest=d[3], ch=d[4], sum=rest.reduce((s,r)=>s+r[1]*r[2],0), x=(ch-sum)/n;
+   const lhs=(n>1?n:'')+'x'+rest.map(r=>' + '+(r[1]>1?r[1]:'')+'('+on(r[2])+')').join('');
+   return {ok:Number.isInteger(x) && n*x+sum===ch, q:`Determine the oxidation number of <b>${d[1]}</b> in ${c(f)}.`, parts:[{type:'num',label:'Oxidation number (type the sign too, like +4 or -2)',a:''+x}],
+    steps:[`Known values: ${rest.map(r=>r[0]+' is '+on(r[2])+(r[1]>1?' (there are '+r[1]+')':'')).join(', ')}.`, ch===0?'The compound is neutral, so everything adds up to <b>0</b>.':`It is an ion with charge ${on(ch)}, so everything adds up to <b>${on(ch)}</b>, not 0.`,`Write the sum: ${c(lhs+' = '+on(ch))}.`,`The known part adds up to ${on(sum)}, so ${c((n>1?n:'')+'x = '+on(ch-sum))}.`, n>1?`Divide by ${n}, because there are ${n} atoms: ${c('x = '+on(x))}.`:`So ${c('x = '+on(x))}.`]}; },
+ 'Oxidation number: elements and ions':()=>{ const s=pick([['Cl₂',0,1],['Mg',0,1],['O₂',0,1],['N₂',0,1],['Cu',0,1],['H₂',0,1],['Fe',0,1],['Zn²⁺',2,2],['Al³⁺',3,2],['Cl⁻',-1,2],['Na⁺',1,2],['S²⁻',-2,2],['Fe³⁺',3,2],['Br⁻',-1,2],['Ca²⁺',2,2],['O²⁻',-2,2],['K⁺',1,2]]);
+   return {ok:(s[2]===1)===(s[1]===0), q:`What is the oxidation number of ${c(s[0])}?`, parts:[{type:'num',label:'Oxidation number (type the sign too, like +2 or -1; zero is just 0)',a:''+s[1]}],
+    steps: s[2]===1 ? [`${c(s[0])} is an element on its own. It is not in a compound and has no charge.`,'Rule 1: an element in its elemental form is <b>0</b>.'] : [`${c(s[0])} is an ion made of one atom.`,`Rule 2: a one-atom ion has an oxidation number equal to its charge: <b>${on(s[1])}</b>.`]}; },
+ 'Classify a half-reaction':()=>{ const k=ri(0,3); let eq, why;
+   if(k===0){ const h=pick(HALFMETAL); eq=h[0]+' → '+h[1]+' + '+en(h[2]); why=h[0]+' goes from 0 to '+on(h[2]); }
+   else if(k===1){ const h=pick(HALFMETAL); eq=h[1]+' + '+en(h[2])+' → '+h[0]; why=h[0]+' goes from '+on(h[2])+' to 0'; }
+   else if(k===2){ const h=pick(HALOGEN); if(ri(0,1)){ eq=h[0]+' + 2e⁻ → 2'+h[1]; why=h[2]+' goes from 0 to −1'; } else { eq='2'+h[1]+' → '+h[0]+' + 2e⁻'; why=h[2]+' goes from −1 to 0'; } }
+   else { const h=pick(FIXEDHALF); eq=h[0]; why=h[1]; }
+   const isOx=eq.indexOf('e⁻')>eq.indexOf('→'), nums=why.match(/[+−]?\d+/g).map(s=>parseInt(s.replace('−','-'),10));
+   return {ok:nums.length===2 && (nums[1]>nums[0])===isOx, q:`Classify this half-reaction: ${c(eq)}`, parts:[{type:'mc',options:OXRED,a:isOx?0:1}],
+    steps:[`Find the electrons. They are on the <b>${isOx?'right':'left'}</b> of the arrow.`, isOx?'On the right means they are a product: they were <b>lost</b>. Loss of electrons is <b>oxidation</b>.':'On the left means they are a reactant: they were <b>gained</b>. Gain of electrons is <b>reduction</b>.',`Check with oxidation numbers: ${why}, which is ${isOx?'up':'down'}.`]}; },
+ 'Electrons in a half-reaction':()=>{ const k=ri(0,2); let eq, n, steps;
+   if(k===0){ const h=pick(HALFMETAL); n=h[2]; eq=h[0]+' → '+h[1]+' + __ e⁻'; steps=[`The left side has a total charge of 0.`,`The right side has ${c(h[1])}, which is ${on(n)}. To bring it back to 0 you need ${n} electron${n>1?'s':''}, because each one is −1.`,`${c(h[0]+' → '+h[1]+' + '+en(n))}. The electrons are on the right, so this is oxidation.`]; }
+   else if(k===1){ const h=pick(HALFMETAL); n=h[2]; eq=h[1]+' + __ e⁻ → '+h[0]; steps=[`The right side has a total charge of 0.`,`The left side has ${c(h[1])}, which is ${on(n)}. Adding ${n} electron${n>1?'s':''} (each −1) brings it to 0.`,`${c(h[1]+' + '+en(n)+' → '+h[0])}. The electrons are on the left, so this is reduction.`]; }
+   else { const h=pick(HALOGEN); n=2; eq=h[0]+' + __ e⁻ → 2'+h[1]; steps=[`The right side has two ${c(h[1])} ions. Each is −1, so the total is −2.`,`The left side has ${c(h[0])}, which is 0. Adding 2 electrons makes it −2 as well.`,`${c(h[0]+' + 2e⁻ → 2'+h[1])}. The electrons are on the left, so this is reduction.`]; }
+   return {ok:n>=1&&n<=3&&eq.indexOf('__')>0, q:`Fill in the number of electrons so that the charge balances: ${c(eq)}`, parts:[{type:'num',label:'Number of electrons',a:''+n}], steps}; },
+ 'Displacement reaction':()=>{ const p=pair(TWOPLUS), a=p[0], b=p[1], an=pick(ANION), eq=a+'(s) + '+an[3](b)+'(aq) → '+an[3](a)+'(aq) + '+b+'(s)';
+   const o1=shuffle([NAME[a],NAME[b]+' ions ('+ION[b]+')']), o2=shuffle([ION[a],ION[b],an[1]]);
+   return {ok:E0[a]<E0[b], q:`A strip of ${NAME[a]} is placed in ${salt(b)} ${an[2]} solution: ${c(eq)}`,
+    parts:[{type:'mc',label:'Which is oxidized?',options:o1,a:o1.indexOf(NAME[a])},{type:'mc',label:'Which is the spectator ion?',options:o2.map(c),a:o2.indexOf(an[1])},{type:'num',label:'How many electrons does each '+NAME[a]+' atom lose?',a:'2'}],
+    steps:[`${a}(s) is a plain element, so 0. In ${c(an[3](a))} it is ${c(ION[a])}, so +2. It went up: <b>${NAME[a]} is oxidized</b>.`,`${cap(NAME[b])} is ${c(ION[b])} (+2) at the start and plain ${b}(s) (0) at the end. It went down, so it is reduced.`,`The ${an[2]} ion, ${c(an[1])}, is the same on both sides. It is the <b>spectator ion</b>.`,`0 to +2 is a change of 2, so each ${NAME[a]} atom loses <b>2</b> electrons: ${c(a+' → '+ION[a]+' + 2e⁻')}.`]}; },
+ 'Will the metal displace it?':()=>{ const p=pair(TWOPLUS), an=pick(ANION), happens=ri(0,1)===1, metal=happens?p[0]:p[1], other=happens?p[1]:p[0];
+   return {ok:(E0[metal]<E0[other])===happens, q:`${cap(NAME[p[0]])} is <b>more reactive</b> than ${NAME[p[1]]}. A piece of <b>${NAME[metal]}</b> is placed in ${salt(other)} ${an[2]} solution. What happens?`,
+    parts:[{type:'mc',options:[`A reaction happens: ${NAME[metal]} displaces ${NAME[other]}`,'No reaction'],a:happens?0:1}],
+    steps:['Rule: a <b>more</b> reactive metal displaces a <b>less</b> reactive metal from its solution.', happens?`${cap(NAME[metal])} is the more reactive one, so it pushes ${NAME[other]} out of the solution.`:`${cap(NAME[metal])} is the <b>less</b> reactive one here, so it cannot push ${NAME[other]} out.`, happens?`${cap(NAME[metal])} is oxidized (${c(metal+' → '+ION[metal]+' + 2e⁻')}) and solid ${NAME[other]} forms.`:'Nothing happens. <b>No reaction.</b>']}; },
+ 'Anode and cathode':()=>{ const p=pair(), a=p[0], b=p[1], o1=shuffle([NAME[a],NAME[b]]), o2=shuffle(['from '+NAME[a]+' to '+NAME[b],'from '+NAME[b]+' to '+NAME[a]]);
+   return {ok:E0[a]<E0[b], q:`A voltaic cell is built from ${NAME[a]} and ${NAME[b]}.${eTable(shuffle(p))}`,
+    parts:[{type:'mc',label:'Which metal is the anode?',options:o1,a:o1.indexOf(NAME[a])},{type:'mc',label:'In the wire, electrons flow',options:o2,a:o2.indexOf('from '+NAME[a]+' to '+NAME[b])},{type:'mc',label:'What happens at the cathode?',options:OXRED,a:1}],
+    steps:[`Compare the E° values: ${a} is ${volt(E0[a])} V and ${b} is ${volt(E0[b])} V.`,`${volt(E0[a])} is more negative, so ${NAME[a]} is more easily oxidized. <b>${cap(NAME[a])} is the anode</b> (AN OX).`,`${cap(NAME[b])} is the cathode. <b>Reduction</b> happens there (RED CAT).`,`Electrons flow in the wire from anode to cathode: <b>from ${NAME[a]} to ${NAME[b]}</b>.`]}; },
+ 'Voltaic cell facts':()=>bank([
+   {q:'What is the job of the salt bridge?',o:['It lets ions move to keep each half-cell neutral and complete the circuit','It carries electrons from the anode to the cathode','It stores the electrical energy','It stops oxidation from happening'],why:['Electrons travel in the wire. <b>Ions</b> travel in the salt bridge.','This keeps each half-cell electrically neutral and completes the circuit, so the electrons can keep flowing.']},
+   {q:'What energy change happens in a voltaic cell?',o:['Chemical energy → electrical energy','Electrical energy → chemical energy','Heat energy → chemical energy','Light energy → electrical energy'],why:['A voltaic cell uses a spontaneous redox reaction to turn <b>chemical</b> energy into <b>electrical</b> energy.']},
+   {q:'What travels through the external wire of a voltaic cell?',o:['Electrons','Ions','Atoms of metal','The salt solution'],why:['Electrons flow through the wire from the anode to the cathode.','Ions move through the solutions and the salt bridge.']},
+   {q:'A voltaic cell that works (a valid cell) has an E°cell that is …',o:['positive','negative','exactly zero','always greater than 3 V'],why:['A positive E°cell means the redox reaction is spontaneous: it happens by itself.','If you calculate a negative value, you have the anode and cathode swapped.']},
+   {q:'Two metals are used in a voltaic cell. Which one becomes the anode?',o:['The one with the more negative E°','The one with the more positive E°','The heavier one','It does not matter'],why:['The metal with the more negative E° is more easily oxidized.','Oxidation happens at the anode, so that metal is the anode.']},
+   {q:'What moves through the salt bridge?',o:['Ions','Electrons','Solid metal','Nothing'],why:['Ions move through the salt bridge to keep each half-cell neutral.','Electrons only travel in the wire.']},
+   {q:'The reaction in a voltaic cell is described as "spontaneous". What does that mean?',o:['It happens by itself, with no outside push','It needs electricity to start','It happens very slowly','It makes no products'],why:['Spontaneous means it happens on its own. That is why the cell can give out energy instead of needing it.']}]),
+ 'Cell potential (E°cell)':()=>{ const p=pair(), a=p[0], b=p[1], cell=E0[b]-E0[a], o1=shuffle([NAME[a],NAME[b]]);
+   return {ok:cell>0 && E0[a]+cell===E0[b], q:`Calculate the standard cell potential of a cell made from ${NAME[a]} and ${NAME[b]}. Use E°cell = E°cathode − E°anode.${eTable(shuffle(p))}`,
+    parts:[{type:'mc',label:'The anode is',options:o1,a:o1.indexOf(NAME[a])},{type:'num',label:'E°cell in V (type just the number)',a:(cell/100).toFixed(2)}],
+    steps:[`${volt(E0[a])} V is more negative than ${volt(E0[b])} V, so <b>${NAME[a]} is the anode</b> and ${NAME[b]} is the cathode.`,`Formula: ${c('E°cell = E°cathode − E°anode')}.`,`Substitute with signs: ${c('E°cell = ('+volt(E0[b])+' V) − ('+volt(E0[a])+' V)')}.`+((NE[a]!==2||NE[b]!==2)?' Use the table values as they are. Do not multiply by the number of electrons.':''), E0[a]<0?`Minus a negative is a plus: ${c(volt(E0[b]).replace('+','')+' + '+(Math.abs(E0[a])/100).toFixed(2))}.`:'Subtract.',`${c('E°cell = +'+(cell/100).toFixed(2)+' V')}. It is positive, so the cell works.`]}; },
+ 'Most easily oxidized':()=>{ let ms; do{ ms=shuffle(METALS).slice(0,4); }while(ms.includes('Sn')&&ms.includes('Pb')); const best=ms.slice().sort((a,b)=>E0[a]-E0[b])[0];
+   return {ok:ms.every(k=>E0[k]>=E0[best]) && ms.filter(k=>E0[k]===E0[best]).length===1, q:`Predict which metal is <b>most easily oxidized</b>.${eTable(ms)}`, parts:[{type:'mc',options:ms.map(k=>cap(NAME[k])+' ('+k+')'),a:ms.indexOf(best)}],
+    steps:['The most easily oxidized metal has the <b>most negative</b> E°.',`The values are ${ms.map(k=>k+' '+volt(E0[k])).join(', ')}.`,`The most negative is ${volt(E0[best])} V, so the answer is <b>${NAME[best]}</b>.`,'Why: its ions are the least likely to gain electrons, so the metal most readily loses them.']}; },
+ 'Battery efficiency':()=>{ const stored=pick([80,100,120,150,200,250,300,400,500]), pct=pick([40,45,50,55,60,64,65,70,72,75,80,84,85,88,90,92,95,96]), useful=stored*pct/100;
+   return {ok:Number.isInteger(useful) && useful<stored && near(useful/stored*100,pct), q:`A battery stores <b>${stored} Wh</b> of chemical energy and delivers <b>${useful} Wh</b> of useful electrical energy. Calculate its efficiency.`, parts:[{type:'num',label:'Efficiency in % (type just the number)',a:''+pct}],
+    steps:[`Formula: ${c('Efficiency (%) = (useful ÷ stored) × 100')}.`,`Substitute: ${c('('+useful+' ÷ '+stored+') × 100')}.`,`${c(useful+' ÷ '+stored+' = '+(pct/100))}, and ${c((pct/100)+' × 100 = '+pct)}.`,`Efficiency = <b>${pct}%</b>. Remember the % sign.`]}; },
+ 'Efficiency backwards':()=>{ const stored=pick([80,100,120,150,200,250,300,400,500]), pct=pick([40,50,60,70,75,80,85,90,95]), useful=stored*pct/100, findStored=ri(0,1)===1, dec=(pct/100).toFixed(2);
+   return {ok:Number.isInteger(useful) && near(useful/(pct/100),stored), q: findStored ? `A battery delivers <b>${useful} Wh</b> of useful electrical energy and has an efficiency of <b>${pct}%</b>. Determine how much chemical energy it stored.` : `A battery stores <b>${stored} Wh</b> of chemical energy and has an efficiency of <b>${pct}%</b>. Determine how much useful electrical energy it delivers.`,
+    parts:[{type:'num',label:(findStored?'Stored chemical energy':'Useful electrical energy')+' in Wh',a:''+(findStored?stored:useful)}],
+    steps:[`Turn the percentage into a decimal: ${c(pct+' ÷ 100 = '+dec)}.`, findStored?`Rearranged formula: ${c('stored = useful ÷ decimal')}.`:`Rearranged formula: ${c('useful = stored × decimal')}.`, findStored?`${c('stored = '+useful+' ÷ '+dec+' = '+stored+' Wh')}.`:`${c('useful = '+stored+' × '+dec+' = '+useful+' Wh')}.`, findStored?`Check: stored (${stored}) is bigger than useful (${useful}). Good.`:`Check: useful (${useful}) is smaller than stored (${stored}). Good.`]}; },
+ 'Check the limits':()=>{ const P=packs(), f=P.rows[P.bad];
+   return {ok:P.fails.length===1 && P.fails[0]===f, q:P.intro+P.table, parts:[{type:'mc',label:'Which pack does not meet the limits?',options:P.rows.map(r=>r.n),a:P.bad},{type:'mc',label:'Which limit does it break?',options:['mass','cost'],a:P.which==='mass'?0:1}],
+    steps:['Check every pack against <b>both</b> limits.'].concat(P.rows.map(r=>`${r.n}: ${P.kg(r.mass)} kg ${r.mass<=P.M?'✓':'✗ (over '+P.kg(P.M)+' kg)'} and AED ${r.cost} ${r.cost<=P.C?'✓':'✗ (over AED '+P.C+')'}.`)).concat([`<b>${f.n}</b> fails the <b>${P.which}</b> limit, so it is excluded, whatever its other numbers are.`])}; },
+ 'Pick the best option':()=>{ const P=packs(), elig=P.rows.filter(r=>r.mass<=P.M&&r.cost<=P.C).sort((x,y)=>y.cyc-x.cyc), best=elig[0], other=elig[1];
+   return {ok:elig.length===2 && best.cyc>other.cyc && P.rows.indexOf(best)!==P.bad, q:P.intro+' Among the packs that are allowed, the top priority is <b>cycle life</b>.'+P.table,
+    parts:[{type:'mc',label:'Which pack should be selected?',options:P.rows.map(r=>r.n),a:P.rows.indexOf(best)},{type:'num',label:'How many more charge cycles does it have than the other allowed pack?',a:''+(best.cyc-other.cyc)}],
+    steps:[`<b>Limits first.</b> ${P.rows[P.bad].n} breaks the ${P.which} limit (${P.which==='mass'?P.kg(P.rows[P.bad].mass)+' kg is over '+P.kg(P.M)+' kg':'AED '+P.rows[P.bad].cost+' is over AED '+P.C}), so cross it out`+(P.rows[P.bad].cyc>best.cyc?', even though it has the longest cycle life.':'.'),`That leaves ${best.n} (${best.cyc} cycles) and ${other.n} (${other.cyc} cycles).`,`<b>Then the top priority.</b> ${best.cyc} is more than ${other.cyc}, so choose <b>${best.n}</b>.`,`The difference is ${c(best.cyc+' − '+other.cyc+' = '+(best.cyc-other.cyc))} cycles.`]}; },
+ 'Will it protect iron?':()=>{ const k=pick(['Mg','Al','Zn','Ni','Sn','Pb','Cu','Ag']), protects=E0[k]<E0.Fe, o2=shuffle(['iron',NAME[k]]);
+   return {ok:E0[k]!==E0.Fe && Math.abs(E0[k]-E0.Fe)>=10, q:`A piece of <b>${NAME[k]}</b> is connected to an iron pipe in salt water.${eTable(shuffle([k,'Fe']))}`,
+    parts:[{type:'mc',label:'What happens to the iron?',options:['It is protected','It corrodes faster than it would alone'],a:protects?0:1},{type:'mc',label:'Which metal is the anode (the one that is oxidized)?',options:o2,a:o2.indexOf(protects?NAME[k]:'iron')}],
+    steps:[`Compare E°: ${k} is ${volt(E0[k])} V and Fe is ${volt(E0.Fe)} V.`, protects?`${cap(NAME[k])} is <b>more negative</b>, so it is more reactive than iron and is oxidized first. It is the anode.`:`${cap(NAME[k])} is <b>less negative</b> than iron, so iron is the more reactive one. <b>Iron</b> becomes the anode and is oxidized.`, protects?`The ${NAME[k]} acts as a sacrificial anode. <b>The iron is protected.</b>`:'<b>The iron corrodes faster</b> than it would on its own. Only a more reactive metal protects iron.']}; },
+ 'Protection methods':()=>bank([
+   {q:'Galvanizing means coating steel with which metal?',o:['Zinc','Copper','Tin','Gold'],why:['Galvanizing is a <b>zinc</b> coating. Zinc is more reactive than iron, so it is oxidized first.']},
+   {q:'A painted steel fence gets a deep scratch. What happens at the scratch?',o:['The steel is exposed to oxygen and water, so it can rust','The paint keeps protecting it','The paint is oxidized instead of the steel','Nothing, because paint is more reactive than iron'],why:['Paint is a barrier method. It only works by keeping oxygen and water away.','Once it is scratched, the steel underneath is exposed.']},
+   {q:'Galvanized steel still resists rust when it is scratched. Why?',o:['Zinc is more reactive than iron, so the zinc is oxidized first','Zinc is less reactive than iron','The scratch seals itself with paint','Zinc stops water from being wet'],why:['Zinc is more reactive than iron, so zinc loses electrons in place of the iron, even next to a scratch.']},
+   {q:'Why does a sacrificial anode need to be replaced from time to time?',o:['It is oxidized and slowly used up','It turns into steel','It becomes less reactive than iron','It fills up with electrons'],why:['The sacrificial anode is oxidized instead of the steel. Its atoms turn into ions, so the block is slowly eaten away.']},
+   {q:'Which of these makes iron corrode faster?',o:['Salt water','A coat of paint','A zinc coating','Dry air with no water'],why:['Iron needs oxygen and water to rust, and salts speed it up.','Paint and zinc are both ways of protecting it.']},
+   {q:'How do barrier methods such as paint, epoxy or plastic protect steel?',o:['They block oxygen and water from reaching the steel','They are oxidized instead of the steel','They make the steel less reactive','They supply electrons to the steel'],why:['A barrier keeps oxygen and water away from the surface. No contact, no rusting.']},
+   {q:'Which metal could be used as a sacrificial anode for steel?',o:['Magnesium','Copper','Silver','Tin'],why:['A sacrificial anode must be <b>more reactive than iron</b>. Magnesium is.','Copper, silver and tin are less reactive than iron and would make it corrode faster.']},
+   {q:'When iron corrodes, what happens to the iron atoms?',o:['They are oxidized: Fe → Fe²⁺ + 2e⁻','They are reduced: Fe²⁺ + 2e⁻ → Fe','They gain electrons','Nothing; only the water changes'],why:['Corrosion is oxidation of the metal. Iron atoms lose electrons and become ions.']}]),
+ 'CER parts':()=>bank([
+   ['The farm should select the lithium-ion pack.',0],['Lithium-ion lasts 1000 cycles and NiMH lasts 600 cycles.',1],['Zinc is more reactive than iron, so zinc loses electrons instead of the iron.',2],
+   ['The technician\'s claim is not supported.',0],['The nail with copper lost 0.95 g, but the bare nail lost only 0.42 g.',1],['Copper has a less negative E° than iron, so iron becomes the anode and is oxidized.',2],
+   ['Zinc is the better choice for the pipe.',0],['The iron lost 0.03 g with zinc and 0.01 g with magnesium.',1],['Magnesium is more reactive, so it is used up faster and would need replacing sooner.',2],
+   ['The lead–acid pack has a mass of 2.30 kg and the limit is 2.00 kg.',1],['The Mg–Ag cell is the better choice.',0],['Electrons flow from the more reactive metal to the less reactive one, so the more reactive metal is the one that is eaten away.',2]
+  ].map(s=>({q:'Which part of a Claim, Evidence, Reasoning answer is this sentence?<div class="plain">"'+s[0]+'"</div>',o:CER3,a:s[1],fixed:true,why:[['A <b>claim</b> is a one-sentence answer to the question. It states the decision, with no numbers or explanation yet.','<b>Evidence</b> is data: numbers from the table or results, with units.','<b>Reasoning</b> explains <i>why</i>, using chemistry. Look for "so" or "because" and science ideas like reactivity or electron transfer.'][s[1]]]}))),
+ 'Command terms':()=>{ const i=ri(0,TERMS.length-1), askMeaning=ri(0,1)===1, others=shuffle(TERMS.filter((_,j)=>j!==i)).slice(0,3);
+   const opts=shuffle([TERMS[i]].concat(others)).map(t=>askMeaning?t[1]:t[0]), right=askMeaning?TERMS[i][1]:TERMS[i][0];
+   return {ok:opts.filter(x=>x===right).length===1, q: askMeaning ? `A question starts with the command term <b>${TERMS[i][0]}</b>. What do you have to do?` : `Which command term means: "${TERMS[i][1]}"`, parts:[{type:'mc',options:opts,a:opts.indexOf(right)}],
+    steps:[`<b>${TERMS[i][0]}:</b> ${TERMS[i][1]}`]}; }
+};
+function near(a,b){ return Math.abs(a-b)<1e-6; }
+// only hand out a question once its double-check has passed
+function makeQ(name){ for(let i=0;i<50;i++){ const Q=GEN[name](); if(Q.ok===true) return Q; } throw new Error('could not build a checked question: '+name); }
+// which random questions belong to which Learn topic (same order as the lessons)
+const TOPIC_GENS=[['Oxidized or reduced?','Oxidizing and reducing agents'],['Oxidation number in a compound','Oxidation number: elements and ions'],['Classify a half-reaction','Electrons in a half-reaction'],['Displacement reaction','Will the metal displace it?'],['Anode and cathode','Voltaic cell facts'],['Cell potential (E°cell)','Most easily oxidized'],['Battery efficiency','Efficiency backwards'],['Check the limits','Pick the best option'],['Will it protect iron?','Protection methods'],['CER parts','Command terms']];
+function buildTest(){ const out=[]; TOPIC_GENS.forEach((g,t)=>{ [g[0],g[1]||g[0]].forEach(n=>{ const Q=makeQ(n); Q.topic=t; Q.skill=n; out.push(Q); }); }); return shuffle(out); }
+// the message shown for a test score (pct is 0 to 100)
+function verdict(pct){ return pct===100?{k:'perfect',t:"You're ready!",d:'Every question right. Keep it fresh with a little practice before the exam.'}
+  : pct>=95?{k:'ready',t:"You're ready!",d:'Almost perfect. You can still improve on:'}
+  : pct>=75?{k:'close',t:'Good work, nearly there.',d:'You are having a little trouble with:'}
+  : pct>0?{k:'revise',t:'Keep going.',d:'Topics you should revise again:'}
+  : {k:'zero',t:'Revise again.',d:'Go back through all 10 topics in Learn, one at a time, then take the test again.'}; }
+
+// ---------- calculator maths: a small safe parser (no eval) ----------
+// supports + − × ÷ ^, brackets, decimals, negative numbers, sqrt( ) or √, and pi
+function calcEval(src){
+  const s=String(src).replace(/\s+/g,'').replace(/[−–]/g,'-').replace(/[×·]/g,'*').replace(/÷/g,'/').replace(/√/g,'sqrt').replace(/π/g,'pi').toLowerCase();
+  if(!s) throw new Error('Type a calculation');
+  let i=0;
+  const peek=()=>s[i], eat=c=>{ if(s[i]===c){ i++; return true; } return false; };
+  function expr(){ let v=term(); for(;;){ if(eat('+')) v+=term(); else if(eat('-')) v-=term(); else return v; } }
+  function term(){ let v=unary(); for(;;){ if(eat('*')) v*=unary(); else if(eat('/')){ const d=unary(); if(d===0) throw new Error('Cannot divide by 0'); v/=d; } else if(peek()==='('||/[a-z]/.test(peek()||'')) v*=unary(); else return v; } }
+  function unary(){ if(eat('-')) return -unary(); if(eat('+')) return unary(); return power(); }
+  function power(){ const b=primary(); if(eat('^')){ const e=unary(); const r=Math.pow(b,e); if(!isFinite(r)||isNaN(r)) throw new Error('Not a real number'); return r; } return b; }
+  function primary(){
+    if(eat('(')){ const v=expr(); if(!eat(')')) throw new Error('Missing a closing bracket )'); return v; }
+    if(s.startsWith('sqrt',i)){ i+=4; const v=primary(); if(v<0) throw new Error('No real answer: √ of a negative uses i (√'+(-v)+' × i)'); return Math.sqrt(v); }
+    if(s.startsWith('pi',i)){ i+=2; return Math.PI; }
+    const m2=/^\d*\.?\d+/.exec(s.slice(i)); if(!m2) throw new Error(i>=s.length?'The calculation is not finished':'I do not understand "'+s[i]+'"');
+    i+=m2[0].length; return parseFloat(m2[0]);
+  }
+  const v=expr(); if(i<s.length) throw new Error(s[i]===')'?'Extra closing bracket )':'I do not understand "'+s[i]+'"');
+  if(!isFinite(v)) throw new Error('Too big to show');
+  return parseFloat(v.toPrecision(12));
+}
+
+// ---------- page code (runs only in a browser) ----------
+if (typeof document !== 'undefined') {
+  const $=(s,r)=> (r||document).querySelector(s);
+  const store={ get(k,d){ try{ const v=localStorage.getItem(k); return v?JSON.parse(v):d; }catch(e){ return d; } }, set(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} } };
+  const TABS=['learn','practice','extra','test','sheet'];
+  function go(tab){ document.querySelectorAll('nav button[data-tab]').forEach(x=>x.classList.toggle('on',x.dataset.tab===tab)); TABS.forEach(id=>$('#'+id).classList.toggle('hide',id!==tab)); window.scrollTo(0,0); }
+
+  // ----- sound effects (made with the browser's own sound generator, no files needed) -----
+  let actx=null, muted=store.get('chem10_muted',false);
+  function tone(f,t0,d,type,v){ if(muted) return; try{ actx=actx||new (window.AudioContext||window.webkitAudioContext)(); if(actx.state==='suspended') actx.resume();
+      const o=actx.createOscillator(), g=actx.createGain(), s=actx.currentTime+t0; o.type=type||'sine'; o.frequency.value=f;
+      g.gain.setValueAtTime(0.0001,s); g.gain.exponentialRampToValueAtTime(v||0.18,s+0.015); g.gain.exponentialRampToValueAtTime(0.0001,s+d);
+      o.connect(g); g.connect(actx.destination); o.start(s); o.stop(s+d+0.03); }catch(e){} }
+  const SFX={ right(){tone(660,0,.12);tone(880,.1,.2);}, wrong(){tone(220,0,.16,'sawtooth',.1);tone(165,.14,.24,'sawtooth',.1);}, tick(){tone(1200,0,.05,'triangle',.12);tone(1600,.05,.07,'triangle',.1);}, untick(){tone(500,0,.06,'triangle',.1);},
+    click(){tone(700,0,.03,'triangle',.06);}, step(){tone(900,0,.04,'sine',.07);}, unlock(){[523,659,784,1047].forEach((f,i)=>tone(f,i*.11,.2));},
+    perfect(){[523,659,784,1047,1319].forEach((f,i)=>tone(f,i*.12,.25));tone(1568,.62,.6);}, good(){[523,659,784,1047].forEach((f,i)=>tone(f,i*.13,.22));}, okay(){[440,554,659].forEach((f,i)=>tone(f,i*.14,.22));}, low(){[392,330,262].forEach((f,i)=>tone(f,i*.17,.28,'triangle'));} };
+  const sb=$('#sound'); function paintSound(){ sb.textContent=muted?'Sound: off':'Sound: on'; sb.setAttribute('aria-pressed',String(!muted)); }
+  sb.onclick=()=>{ muted=!muted; store.set('chem10_muted',muted); paintSound(); SFX.click(); }; paintSound();
+  document.querySelectorAll('nav button[data-tab]').forEach(b=>b.onclick=()=>{ SFX.click(); go(b.dataset.tab); });
+
+  // one question widget, used everywhere. onDone(correct, whatYouAnswered) is called after Check.
+  // opts.test = true hides the steps until the test is over.
+  function renderQuestion(box, Q, onDone, opts){
+    opts=opts||{}; box.innerHTML='';
+    const q=document.createElement('div'); q.className='q'; q.innerHTML=Q.q; box.appendChild(q);
+    const state=Q.parts.map(p=>p.type==='multi'?[]:null), els=[];
+    Q.parts.forEach((p,pi)=>{
+      const wrap=document.createElement('div'); wrap.className='part';
+      if(p.label){ const l=document.createElement('label'); l.innerHTML=p.label; wrap.appendChild(l); }
+      if(p.type==='num'){ const inp=document.createElement('input'); inp.type='text'; inp.setAttribute('aria-label',p.label?p.label.replace(/<[^>]+>/g,''):'your answer'); inp.placeholder='type here';
+        inp.oninput=()=>{state[pi]=inp.value;}; inp.onkeydown=e=>{ if(e.key==='Enter') check.click(); }; wrap.appendChild(inp); els.push(inp); }
+      else { const g=document.createElement('div'); g.className='opts'; const btns=[];
+        p.options.forEach((o,oi)=>{ const b=document.createElement('button'); b.type='button'; b.className='opt'; b.innerHTML=o;
+          b.onclick=()=>{ if(check.disabled) return; SFX.click();
+            if(p.type==='multi'){ const k=state[pi].indexOf(oi); if(k<0) state[pi].push(oi); else state[pi].splice(k,1); b.classList.toggle('sel'); }
+            else { state[pi]=oi; btns.forEach(x=>x.classList.toggle('sel',x===b)); } };
+          g.appendChild(b); btns.push(b); });
+        wrap.appendChild(g); els.push(btns); }
+      box.appendChild(wrap);
+    });
+    const check=document.createElement('button'); check.className='btn'; check.textContent='Check my answer';
+    const show=document.createElement('button'); show.className='btn ghost'; show.textContent='Show me the steps';
+    const msg=document.createElement('div'); const steps=document.createElement('ol'); steps.className='steps';
+    box.appendChild(check); if(!opts.test) box.appendChild(show); box.appendChild(msg); box.appendChild(steps);
+    let shown=0;
+    function nextStep(all){ do { if(shown>=Q.steps.length) break; const li=document.createElement('li'); li.innerHTML=Q.steps[shown++]; steps.appendChild(li); } while(all);
+      show.textContent = shown>=Q.steps.length ? 'All steps shown' : 'Show the next step'; show.disabled = shown>=Q.steps.length; }
+    show.onclick=()=>{ SFX.step(); nextStep(false); };
+    check.onclick=()=>{
+      if(Q.parts.some((p,pi)=> p.type==='multi' ? state[pi].length===0 : (state[pi]===null||state[pi]===''))){ msg.className='msg bad'; msg.textContent='Answer every part first.'; return; }
+      let all=true; const given=[];
+      Q.parts.forEach((p,pi)=>{ let ok;
+        if(p.type==='num'){ ok=sameNum(state[pi],p.a); els[pi].classList.add(ok?'right':'wrong'); els[pi].disabled=true; given.push(String(state[pi]).replace(/[<>&]/g,'')); }
+        else if(p.type==='multi'){ const s=state[pi].slice().sort().join(','), a=p.a.slice().sort().join(','); ok=s===a; els[pi].forEach((b,oi)=>{ if(p.a.includes(oi)) b.classList.add('right'); else if(state[pi].includes(oi)) b.classList.add('wrong'); }); given.push(state[pi].slice().sort().map(i=>p.options[i]).join(' and ')); }
+        else { ok=state[pi]===p.a; els[pi].forEach((b,oi)=>{ if(oi===p.a) b.classList.add('right'); else if(oi===state[pi]) b.classList.add('wrong'); }); given.push(p.options[state[pi]]); }
+        if(!ok) all=false; });
+      check.disabled=true; if(all) SFX.right(); else SFX.wrong();
+      msg.className='msg '+(all?'good':'bad');
+      msg.innerHTML= all ? 'Correct!' : opts.test ? 'Not quite. You will see the full working at the end of the test.' : 'Not quite. The right answer is ' + answerText(Q) + '. Read the steps below.';
+      if(!all && !opts.test) nextStep(true);
+      if(onDone) onDone(all, given.join(', '));
+    };
+  }
+  function answerText(Q){ return Q.parts.map(p=> p.type==='num' ? '<b>'+neg(parseFloat(p.a))+'</b>' : p.type==='multi' ? '<b>'+p.a.map(i=>p.options[i]).join(' and ')+'</b>' : '<b>'+p.options[p.a]+'</b>').join(', '); }
+
+  // ----- LEARN, with a tick box on every topic -----
+  let ticks=store.get('chem10_ticks',{}); const allTicked=()=>LESSONS.every((_,i)=>ticks[i]); let paintTest=()=>{};
+  const topicEls=[];
+  (function(){ const root=$('#learn');
+    const intro=document.createElement('div'); intro.className='card';
+    intro.innerHTML='<h2>Learn the 10 topics</h2><p>Open a topic, read the rule, then see a worked example one step at a time. Do the quick check. When you understand the topic, tick its box. <b>Tick all 10 to unlock the test.</b></p><div class="row"><span class="pill" id="tickcount"></span><button class="btn hide" id="gotest">Go to the test →</button></div><div class="bar"><i id="tickbar"></i></div><small class="tip">The exam is 90 minutes. It is marked on Criterion A and the top level is 8.</small>';
+    root.appendChild(intro);
+    $('#gotest').onclick=()=>{ SFX.click(); go('test'); };
+    function paintTicks(){ const n=LESSONS.filter((_,i)=>ticks[i]).length; $('#tickcount').textContent=n+' of '+LESSONS.length+' topics ticked'; $('#tickbar').style.width=(100*n/LESSONS.length)+'%';
+      $('#gotest').classList.toggle('hide',!allTicked()); $('#testtab').textContent=allTicked()?'4. Test':'4. Test (locked)';
+      topicEls.forEach((d,i)=>{ d.classList.toggle('done',!!ticks[i]); $('.mark',d).textContent=ticks[i]?'✓':''; }); paintTest(); }
+    LESSONS.forEach((L,i)=>{ const d=document.createElement('details'); d.className='card topic'; topicEls.push(d);
+      d.innerHTML='<summary><span class="num">'+(i+1)+'</span><span>'+L.t+'</span><span class="mark" aria-hidden="true"></span></summary>'+L.html+'<h3>Worked example</h3><div class="q">'+L.ex.q+'</div>';
+      const ol=document.createElement('ol'); ol.className='steps'; const b=document.createElement('button'); b.className='btn'; b.textContent='Show step 1'; let n=0;
+      b.onclick=()=>{ SFX.step(); const li=document.createElement('li'); li.innerHTML=L.ex.steps[n++]; ol.appendChild(li); if(n>=L.ex.steps.length){ b.textContent='Done'; b.disabled=true; } else b.textContent='Show step '+(n+1); };
+      d.appendChild(ol); d.appendChild(b);
+      const h=document.createElement('h3'); h.textContent='Quick check'; d.appendChild(h);
+      L.checks.forEach(c=>{ const box=document.createElement('div'); renderQuestion(box,{q:c.q,parts:[{type:'mc',options:c.options,a:c.a}],steps:[c.why]}); d.appendChild(box); });
+      const lab=document.createElement('label'); lab.className='tickbox'; const cb=document.createElement('input'); cb.type='checkbox'; cb.checked=!!ticks[i];
+      cb.onchange=()=>{ const before=allTicked(); ticks[i]=cb.checked; store.set('chem10_ticks',ticks); paintTicks(); if(cb.checked && allTicked() && !before) SFX.unlock(); else if(cb.checked) SFX.tick(); else SFX.untick(); };
+      lab.appendChild(cb); lab.appendChild(document.createTextNode(' I understand this topic'));
+      d.appendChild(lab); root.appendChild(d); });
+    window.__paintTicks=paintTicks;
+  })();
+
+  // ----- REVIEW SHEET -----
+  (function(){ const root=$('#practice'); let res=store.get('chem10_review12',{}); let cur=0;
+    const card=document.createElement('div'); card.className='card';
+    card.innerHTML='<div class="row"><h2>Study guide questions: '+REVIEW.length+'</h2><span class="pill" id="score"></span></div><div class="bar"><i id="pbar"></i></div><div class="dots" id="dots"></div>';
+    const qbox=document.createElement('div'); qbox.className='card'; const head=document.createElement('div'); head.className='row'; const body=document.createElement('div');
+    const prev=document.createElement('button'); prev.className='btn ghost'; prev.textContent='← Back'; const next=document.createElement('button'); next.className='btn'; next.textContent='Next →';
+    const reset=document.createElement('button'); reset.className='btn ghost'; reset.textContent='Start again';
+    qbox.appendChild(head); qbox.appendChild(body); const foot=document.createElement('div'); foot.appendChild(prev); foot.appendChild(next); foot.appendChild(reset); qbox.appendChild(foot);
+    root.appendChild(card); root.appendChild(qbox);
+    function paint(){ const done=Object.keys(res).length, good=Object.values(res).filter(Boolean).length;
+      $('#score').textContent=good+' correct out of '+done+' answered'; $('#pbar').style.width=(100*done/REVIEW.length)+'%';
+      const dots=$('#dots'); dots.innerHTML=''; REVIEW.forEach((_,i)=>{ const b=document.createElement('button'); b.className='dot'+(i===cur?' cur':'')+(res[i]===true?' ok':res[i]===false?' no':''); b.textContent=i+1; b.setAttribute('aria-label','Question '+(i+1)); b.onclick=()=>{ SFX.click(); cur=i;load();}; dots.appendChild(b); }); }
+    function load(){ head.innerHTML='<h2>Question '+(cur+1)+'</h2><span class="pill">'+REVIEW[cur].sec+'</span>';
+      renderQuestion(body,REVIEW[cur],ok=>{ res[cur]=ok; store.set('chem10_review12',res); paint(); }); prev.disabled=cur===0; next.disabled=cur===REVIEW.length-1; paint(); }
+    prev.onclick=()=>{ SFX.click(); if(cur>0){cur--;load();} }; next.onclick=()=>{ SFX.click(); if(cur<REVIEW.length-1){cur++;load();} };
+    reset.onclick=()=>{ SFX.click(); res={}; store.set('chem10_review12',res); cur=0; load(); };
+    load();
+  })();
+
+  // ----- EXTRA PRACTICE -----
+  (function(){ const root=$('#extra'); const names=Object.keys(GEN); let skill=names[0], right=0, total=0;
+    const card=document.createElement('div'); card.className='card'; card.innerHTML='<div class="row"><h2>Extra practice</h2><span class="pill" id="xscore">0 correct out of 0</span></div><p>Pick a skill. You get a brand-new question every time, with the steps.</p>';
+    const opts=document.createElement('div'); opts.className='opts'; const btns=[];
+    names.forEach(n=>{ const b=document.createElement('button'); b.className='opt'+(n===skill?' sel':''); b.textContent=n; b.onclick=()=>{ SFX.click(); skill=n; btns.forEach(x=>x.classList.toggle('sel',x===b)); fresh(); }; opts.appendChild(b); btns.push(b); });
+    card.appendChild(opts); root.appendChild(card);
+    const qbox=document.createElement('div'); qbox.className='card'; const body=document.createElement('div'); const again=document.createElement('button'); again.className='btn'; again.textContent='New question';
+    qbox.appendChild(body); qbox.appendChild(again); root.appendChild(qbox);
+    function fresh(){ renderQuestion(body,makeQ(skill),ok=>{ total++; if(ok) right++; $('#xscore').textContent=right+' correct out of '+total; }); }
+    again.onclick=()=>{ SFX.click(); fresh(); }; fresh();
+  })();
+
+  // ----- THE TEST: unlocks when all 10 topics are ticked -----
+  (function(){ const root=$('#test'); let qs=null, cur=0, log=[];
+    function locked(){ const n=LESSONS.filter((_,i)=>ticks[i]).length;
+      root.innerHTML='<div class="card"><h2>The test is locked</h2><p>Tick <b>all 10 topics</b> in the Learn tab to unlock it. You have ticked <b>'+n+' of 10</b>.</p><p>Still to tick:</p><ul>'+LESSONS.map((L,i)=>ticks[i]?'':'<li>'+(i+1)+'. '+L.t+'</li>').join('')+'</ul><button class="btn" id="tolearn">Go to Learn</button></div>';
+      $('#tolearn').onclick=()=>{ SFX.click(); go('learn'); }; }
+    function intro(){ const last=store.get('chem10_lasttest',null);
+      root.innerHTML='<div class="card"><h2>Test yourself</h2><p>20 new questions, 2 from each topic, made fresh every time. There are no hints during the test. At the end you get your score, the topics to work on, and the full working for every question you got wrong.</p>'+(last!==null?'<p class="pill" style="display:inline-block">Your last score: '+last+'%</p><br>':'')+'<button class="btn" id="start">Start the test</button></div>';
+      $('#start').onclick=()=>{ SFX.click(); qs=buildTest(); cur=0; log=[]; ask(); }; }
+    function ask(){ root.innerHTML='<div class="card"><div class="row"><h2>Question '+(cur+1)+' of '+qs.length+'</h2><span class="pill">'+log.filter(x=>x.ok).length+' correct so far</span></div><div class="bar"><i style="width:'+(100*cur/qs.length)+'%"></i></div><div id="tq"></div><button class="btn hide" id="tnext"></button></div>';
+      const nx=$('#tnext'); nx.textContent=cur===qs.length-1?'See my results':'Next question →';
+      renderQuestion($('#tq'),qs[cur],(ok,given)=>{ log.push({ok,given,Q:qs[cur]}); nx.classList.remove('hide'); nx.focus(); },{test:true});
+      nx.onclick=()=>{ SFX.click(); cur++; if(cur<qs.length) ask(); else results(); }; window.scrollTo(0,0); }
+    function results(){ const right=log.filter(x=>x.ok).length, pct=Math.round(100*right/log.length), v=verdict(pct); store.set('chem10_lasttest',pct);
+      ({perfect:SFX.perfect,ready:SFX.good,close:SFX.good,revise:SFX.okay,zero:SFX.low})[v.k]();
+      const miss={}; log.forEach(x=>{ if(!x.ok) miss[x.Q.topic]=(miss[x.Q.topic]||0)+1; }); const topics=Object.keys(miss).map(Number).sort((a,b)=>a-b);
+      let h='<div class="card result '+v.k+'"><div class="big">'+pct+'%</div><p class="pill" style="display:inline-block">'+right+' correct out of '+log.length+'</p><h2>'+v.t+'</h2><p>'+v.d+'</p>';
+      if(v.k!=='perfect' && v.k!=='zero') h+='<ul class="tlist">'+topics.map(t=>'<li><button class="opt" data-topic="'+t+'">'+(t+1)+'. '+LESSONS[t].t+' <span class="pill">'+miss[t]+' of 2 wrong</span></button></li>').join('')+'</ul><small class="tip">Press a topic to open it in Learn.</small>';
+      h+='<div><button class="btn" id="again">Take a new test</button><button class="btn ghost" id="back">Go to Learn</button></div></div>';
+      const wrong=log.filter(x=>!x.ok);
+      if(wrong.length){ h+='<div class="card"><h2>Working for the questions you got wrong</h2>'+wrong.map(x=>'<div class="wrongq"><span class="pill">'+LESSONS[x.Q.topic].t+'</span><div class="q">'+x.Q.q+'</div><p class="msg bad">Your answer: '+x.given+'</p><p class="msg good">Correct answer: '+answerText(x.Q)+'</p><ol class="steps">'+x.Q.steps.map(s=>'<li>'+s+'</li>').join('')+'</ol></div>').join('')+'</div>'; }
+      root.innerHTML=h;
+      $('#again').onclick=()=>{ SFX.click(); qs=buildTest(); cur=0; log=[]; ask(); }; $('#back').onclick=()=>{ SFX.click(); go('learn'); };
+      root.querySelectorAll('[data-topic]').forEach(b=>b.onclick=()=>{ SFX.click(); go('learn'); const d=topicEls[+b.dataset.topic]; d.open=true; d.scrollIntoView(); });
+      qs=null; window.scrollTo(0,0); }
+    paintTest=()=>{ if(qs) return; if(root.querySelector('.result')) return; if(allTicked()) intro(); else locked(); };
+    window.__test={results:(r)=>{ log=r; results(); }, build:buildTest};
+  })();
+  window.__paintTicks();
+
+  // ----- WHITEBOARD: draw, erase, clear -----
+  (function(){ const wb=$('#wb'), cv=$('#wbcanvas'), ctx=cv.getContext('2d'); let mode='pen', size=1, color=null, drawing=false, last=null;
+    const SIZES=[['thin',2],['medium',4],['thick',8]];
+    const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+    const COLORS=[css('--ink')||'#1c2430','#2f6fed','#d9342b','#1e9e55']; color=COLORS[0];
+    COLORS.forEach((c,k)=>{ const b=document.createElement('button'); b.className='swatch'+(k===0?' on':''); b.style.background=c; b.setAttribute('aria-label','Pen colour '+(k+1));
+      b.onclick=()=>{ SFX.click(); color=c; setMode('pen'); document.querySelectorAll('.swatch').forEach(x=>x.classList.toggle('on',x===b)); }; $('#wbcolors').appendChild(b); });
+    function fit(){ const r=cv.getBoundingClientRect(), d=window.devicePixelRatio||1, w=Math.max(1,Math.round(r.width*d)), h=Math.max(1,Math.round(r.height*d)); if(cv.width===w&&cv.height===h) return;
+      const keep=document.createElement('canvas'); keep.width=cv.width; keep.height=cv.height; if(cv.width&&cv.height) keep.getContext('2d').drawImage(cv,0,0);
+      cv.width=w; cv.height=h; if(keep.width&&keep.height) ctx.drawImage(keep,0,0); }
+    function pos(e){ const r=cv.getBoundingClientRect(), d=window.devicePixelRatio||1; return [(e.clientX-r.left)*d,(e.clientY-r.top)*d]; }
+    function stroke(a,b){ const d=window.devicePixelRatio||1; ctx.lineCap='round'; ctx.lineJoin='round';
+      if(mode==='erase'){ ctx.globalCompositeOperation='destination-out'; ctx.lineWidth=26*d; ctx.strokeStyle='#000'; } else { ctx.globalCompositeOperation='source-over'; ctx.lineWidth=SIZES[size][1]*d; ctx.strokeStyle=color; }
+      ctx.beginPath(); ctx.moveTo(a[0],a[1]); ctx.lineTo(b[0],b[1]); ctx.stroke(); }
+    cv.addEventListener('pointerdown',e=>{ e.preventDefault(); drawing=true; last=pos(e); stroke(last,[last[0]+0.01,last[1]+0.01]); try{ cv.setPointerCapture(e.pointerId); }catch(x){} });
+    cv.addEventListener('pointermove',e=>{ if(!drawing) return; e.preventDefault(); const p=pos(e); stroke(last,p); last=p; });
+    ['pointerup','pointercancel','pointerleave'].forEach(n=>cv.addEventListener(n,()=>{ drawing=false; }));
+    function setMode(mm){ mode=mm; $('#wbpen').classList.toggle('on',mm==='pen'); $('#wberase').classList.toggle('on',mm==='erase'); cv.style.cursor=mm==='erase'?'cell':'crosshair'; }
+    $('#wbpen').onclick=()=>{ SFX.click(); setMode('pen'); }; $('#wberase').onclick=()=>{ SFX.click(); setMode('erase'); };
+    $('#wbsize').onclick=()=>{ SFX.click(); size=(size+1)%SIZES.length; $('#wbsize').textContent='Size: '+SIZES[size][0]; };
+    $('#wbclear').onclick=()=>{ SFX.untick(); ctx.globalCompositeOperation='source-over'; ctx.clearRect(0,0,cv.width,cv.height); };
+    $('#wbtall').onclick=()=>{ SFX.click(); const t=wb.classList.toggle('tall'); document.body.classList.toggle('wbtall',t); $('#wbtall').textContent=t?'Smaller':'Bigger'; fit(); };
+    function toggle(open){ wb.classList.toggle('hide',!open); document.body.classList.toggle('wbopen',open); $('#wbbtn').classList.toggle('on',open); $('#wbside').classList.toggle('on',open); if(open) fit(); }
+    $('#wbside').onclick=()=>$('#wbbtn').click();
+    $('#wbbtn').onclick=()=>{ SFX.click(); toggle(wb.classList.contains('hide')); }; $('#wbclose').onclick=()=>{ SFX.click(); toggle(false); };
+    window.addEventListener('resize',()=>{ if(!wb.classList.contains('hide')) fit(); });
+  })();
+
+  // ----- CALCULATOR -----
+  (function(){ const box=$('#calc'), inp=$('#calcin'), out=$('#calcout'); let lastAns=null;
+    const KEYS=[['7'],['8'],['9'],['÷','op'],['⌫','op'],['4'],['5'],['6'],['×','op'],['C','op'],['1'],['2'],['3'],['−','op'],['(','op'],['0'],['.'],['±','op'],['+','op'],[')','op'],['x²','op'],['^','op'],['√','op'],['Ans','op'],['=','eq']];
+    function insert(t){ const a=inp.selectionStart==null?inp.value.length:inp.selectionStart, b=inp.selectionEnd==null?a:inp.selectionEnd; inp.value=inp.value.slice(0,a)+t+inp.value.slice(b); const c=a+t.length; try{ inp.setSelectionRange(c,c); }catch(e){} }
+    function equals(){ try{ const v=calcEval(inp.value); lastAns=v; out.textContent='= '+neg(v); out.style.color=''; SFX.step(); }catch(e){ out.textContent=e.message; out.style.color='var(--bad)'; SFX.untick(); } }
+    KEYS.forEach(([k,cls])=>{ const b=document.createElement('button'); b.type='button'; b.textContent=k; if(cls) b.className=cls; if(k==='⌫') b.setAttribute('aria-label','Delete'); if(k==='C') b.setAttribute('aria-label','Clear');
+      b.onclick=()=>{ SFX.click();
+        if(k==='=') return equals();
+        if(k==='C'){ inp.value=''; out.innerHTML='&nbsp;'; return; }
+        if(k==='⌫'){ const a=inp.selectionStart==null?inp.value.length:inp.selectionStart, e2=inp.selectionEnd==null?a:inp.selectionEnd; if(a!==e2) inp.value=inp.value.slice(0,a)+inp.value.slice(e2); else if(a>0){ inp.value=inp.value.slice(0,a-1)+inp.value.slice(a); try{ inp.setSelectionRange(a-1,a-1); }catch(x){} } return; }
+        if(k==='±') return insert('(−');
+        if(k==='x²') return insert('^2');
+        if(k==='√') return insert('√(');
+        if(k==='Ans') return insert(lastAns===null?'':(lastAns<0?'('+neg(lastAns)+')':String(lastAns)));
+        insert(k); };
+      $('#calckeys').appendChild(b); });
+    inp.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); equals(); } });
+    function toggle(open){ box.classList.toggle('hide',!open); $('#calcbtn').classList.toggle('on',open); $('#calcside').classList.toggle('on',open); }
+    $('#calcside').onclick=()=>$('#calcbtn').click();
+    $('#calcbtn').onclick=()=>{ SFX.click(); toggle(box.classList.contains('hide')); }; $('#calcclose').onclick=()=>{ SFX.click(); toggle(false); };
+  })();
+
+  // ----- FORMULAS AND WORDS -----
+  (function(){ const root=$('#sheet');
+    root.innerHTML='<div class="card"><h2>Formulas and rules to know</h2>'+
+    '<div class="rule"><b>OIL RIG:</b> Oxidation Is Loss of electrons (number goes up). Reduction Is Gain of electrons (number goes down).</div>'+
+    '<div class="rule"><b>Agents:</b> the reducing agent is oxidized. The oxidizing agent is reduced.</div>'+
+    '<div class="rule"><b>Oxidation numbers:</b> element alone = 0; one-atom ion = its charge; O = −2; H = +1; Group 1 = +1; Group 2 = +2; total = 0 for a compound, or the charge of an ion.</div>'+
+    '<div class="rule"><b>Half-reactions:</b> electrons on the right = oxidation. Electrons on the left = reduction. Atoms and charge must balance.</div>'+
+    '<div class="rule"><b>AN OX, RED CAT:</b> anode = oxidation, cathode = reduction. Electrons flow in the wire from anode to cathode. Ions move in the salt bridge.</div>'+
+    '<div class="rule"><b>Anode:</b> the metal with the more negative E°.</div>'+
+    '<div class="rule"><b>Cell potential:</b> '+c('E°cell = E°cathode − E°anode')+'. Do not multiply by the number of electrons. A working cell is positive. Units: V.</div>'+
+    '<div class="rule"><b>Efficiency:</b> '+c('Efficiency (%) = (useful ÷ stored) × 100')+'<br>'+c('stored = useful ÷ decimal')+' and '+c('useful = stored × decimal')+'</div>'+
+    '<div class="rule"><b>Protecting iron:</b> only a metal more reactive than iron (E° more negative than −0.44 V) protects it. A less reactive metal makes iron corrode faster.</div>'+
+    '<div class="rule"><b>Data questions:</b> limits first, then priorities, quote numbers with units, name the trade-off.</div>'+
+    '<div class="rule"><b>CER:</b> Claim (one-sentence answer), Evidence (at least two numbers with units), Reasoning (the chemistry that explains why).</div></div>'+
+    '<div class="card"><h2>Command terms</h2><table style="width:100%"><tr><th>Command term</th><th>What to do</th></tr>'+TERMS.map(t=>'<tr><td><b>'+t[0]+'</b></td><td style="text-align:left">'+t[1]+'</td></tr>').join('')+'</table></div>'+
+    '<div class="card"><h2>Words for the exam</h2><dl>'+[
+     ['Oxidation','Loss of electrons. The oxidation number increases.'],['Reduction','Gain of electrons. The oxidation number decreases.'],['Redox reaction','A reaction where oxidation and reduction happen together.'],['Oxidizing agent','Accepts electrons and is itself reduced.'],['Reducing agent','Donates electrons and is itself oxidized.'],
+     ['Oxidation number','A number that tracks the electrons an atom has lost or gained.'],['Half-reaction','One half of a redox reaction, written with its electrons.'],['Displacement reaction','A more reactive metal takes the place of a less reactive metal in a solution.'],['Spectator ion','An ion with the same form and oxidation number on both sides. It takes no part in the electron transfer.'],
+     ['Voltaic cell','Turns chemical energy into electrical energy using a spontaneous redox reaction.'],['Spontaneous','Happens by itself.'],['Anode','The electrode where oxidation happens.'],['Cathode','The electrode where reduction happens.'],['Salt bridge','Lets ions move to keep each half-cell neutral and complete the circuit.'],
+     ['Standard reduction potential (E°)','How strongly an ion gains electrons, in volts. More negative means the metal is more easily oxidized.'],['Standard cell potential (E°cell)','The voltage of the whole cell: E°cathode − E°anode.'],
+     ['Efficiency','The percentage of stored chemical energy that comes out as useful electrical energy.'],['Primary battery','Not normally rechargeable.'],['Secondary battery','Designed to be recharged.'],['Cycle life','How many charge cycles a battery lasts.'],
+     ['Corrosion','Gradual damage to a metal from reactions with its surroundings.'],['Barrier method','Paint, epoxy or plastic that blocks oxygen and water.'],['Galvanizing','A zinc coating. Protects steel even when scratched.'],['Sacrificial anode','A more reactive metal connected to steel. It oxidizes instead of the steel and is slowly used up.'],
+     ['Trade-off','What you give up to get what you want.'],['Limitation','A reason an experiment may not show the whole truth.']
+    ].map(w=>'<dt>'+w[0]+'</dt><dd>'+w[1]+'</dd>').join('')+'</dl></div>'+
+    '<div class="card"><h2>Self-check before the exam</h2><div id="selfcheck"></div></div>';
+    const SC=['I can state what oxidation and reduction mean in terms of electrons and oxidation numbers.','I can work out oxidation numbers, including in polyatomic ions.','I can label oxidizing and reducing agents correctly.','I can write a half-reaction with electrons on the correct side and balanced charge.','I can identify spectator ions and explain electron transfer in a displacement reaction.','I can label anode, cathode and electron flow, and calculate E°cell with working and units.','I can calculate efficiency (and rearrange it to find stored energy).','I can check every limit in a data question and quote numbers in my justification.','I can explain how galvanizing and sacrificial anodes protect steel, using electron transfer.','I can write a full Claim, Evidence, Reasoning answer and name the limitation of a short test.'];
+    let sc=store.get('chem10_selfcheck',{});
+    SC.forEach((t,i)=>{ const lab=document.createElement('label'); lab.className='tickbox'; lab.style.marginTop='8px'; lab.style.fontWeight='400'; const cb=document.createElement('input'); cb.type='checkbox'; cb.checked=!!sc[i];
+      cb.onchange=()=>{ sc[i]=cb.checked; store.set('chem10_selfcheck',sc); if(cb.checked) SFX.tick(); else SFX.untick(); }; lab.appendChild(cb); lab.appendChild(document.createTextNode(' '+t)); $('#selfcheck').appendChild(lab); });
+  })();
+}
+if (typeof module !== 'undefined') module.exports={LESSONS,REVIEW,GEN,TOPIC_GENS,makeQ,buildTest,verdict,sameNum,calcEval};
+</script>
+</body>
+</html>
